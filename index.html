@@ -141,6 +141,13 @@
         .in{width:100%;background:#0e1b27;border:1px solid #3d6a8a;color:#fff;padding:10px 12px;margin-top:10px;border-radius:2px;outline:0;user-select:text}.in:focus{border-color:#66c0f4}
         .fr{display:flex;align-items:center;gap:12px;background:#0000003a;border-radius:3px;padding:10px 12px;margin-bottom:6px}
         .dot{width:10px;height:10px;border-radius:50%;background:#555;flex:none}.dot.on{background:#4ade80;box-shadow:0 0 8px #4ade80}
+
+        #ext{padding:0;gap:0;justify-content:flex-start;background:#000}
+        #ext .vr-top{height:44px;width:100%;padding:0 12px;background:#0b141d;justify-content:space-between;flex:none}
+        #ext .vr-top button{margin-left:6px}
+        #ext iframe{width:100vw;height:calc(100vh - 44px);border:0;display:block;background:#000;flex:none}
+        #ext-m{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#c6d4df;font-size:13px;padding:5px 14px;border-radius:4px;pointer-events:none;z-index:2;max-width:92vw;text-align:center}
+        #ext-m:empty{display:none}
     </style>
 </head>
 <body class="h-full steam-gradient-bg min-h-screen flex flex-col antialiased">
@@ -230,8 +237,8 @@
         </div>
     </div>
 
-    <div id="ext" class="vr"><div class="vr-top"><span>🎮 <b id="ext-t"></b></span><span id="ext-a"></span><button onclick="extClose()">✕ Salir (Esc)</button></div>
-        <iframe id="ext-f" sandbox="allow-scripts" title="Juego" style="width:min(960px,100%);height:min(78vh,720px);border:2px solid #66c0f4;border-radius:4px;background:#000"></iframe><div id="ext-m" style="color:#c6d4df;font-size:13px;min-height:18px"></div></div>
+    <div id="ext" class="vr"><div class="vr-top"><span>🎮 <b id="ext-t"></b></span><span id="ext-a"></span><span><button onclick="extFull()">⛶ Pantalla completa</button> <button onclick="extClose()">✕ Salir (Esc)</button></span></div>
+        <iframe id="ext-f" sandbox="allow-scripts allow-pointer-lock" allow="fullscreen; autoplay; gamepad" allowfullscreen title="Juego"></iframe><div id="ext-m"></div></div>
 
     <div id="auth" class="auth"><div class="auth-box">
         <div class="flex items-center gap-2 mb-1"><i class="fa-brands fa-steam text-4xl text-white"></i><span class="text-2xl font-black tracking-widest text-white italic">STEAM</span></div>
@@ -258,7 +265,7 @@
         <div class="max-w-[1380px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-brands fa-steam text-3xl opacity-50"></i>
-                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 19</p>
+                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 20</p>
             </div>
             <div class="flex space-x-4">
                 <span class="hover:underline cursor-pointer">Política de Privacidad</span>
@@ -1182,7 +1189,10 @@
         let extCur = null, extLast = 0;
         function extOpen(g) {
             extCur = g; $v('ext-t').textContent = g.title; $v('ext-a').textContent = 'por ' + g.developer; $v('ext-m').textContent = 'Cargando…';
-            $v('ext-f').src = g.ext; $v('ext').classList.add('on');
+            $v('ext-f').src = g.ext; $v('ext').classList.add('on'); extFull(true);   // se abre a pantalla completa
+        }
+        function extFull(auto) {
+            try { const el = $v('ext'); if (document.fullscreenElement) { if (!auto) document.exitFullscreen(); } else if (el.requestFullscreen) el.requestFullscreen().catch(() => {}); } catch (e) {}
         }
         async function dlOpen(g) {
             if (g.dlPath) {
@@ -1196,7 +1206,7 @@
             if (!/^https?:\/\//.test(g.dl)) { showToast('Descarga no disponible', 'El enlace de descarga todavía no está configurado.'); return; }
             window.open(g.dl, '_blank', 'noopener'); showToast('Descargando ' + g.title, 'Si no empieza, revisa el bloqueo de ventanas emergentes.');
         }
-        function extClose() { $v('ext').classList.remove('on'); $v('ext-f').src = 'about:blank'; extCur = null; }
+        function extClose() { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} $v('ext').classList.remove('on'); $v('ext-f').src = 'about:blank'; extCur = null; }
         window.addEventListener('keydown', e => { if (e.key === 'Escape' && extCur) extClose(); });
         window.addEventListener('message', e => {
             const f = $v('ext-f'); if (!extCur || e.source !== f.contentWindow) return;
