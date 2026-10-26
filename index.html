@@ -265,7 +265,7 @@
         <div class="max-w-[1380px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-brands fa-steam text-3xl opacity-50"></i>
-                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 20</p>
+                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 21</p>
             </div>
             <div class="flex space-x-4">
                 <span class="hover:underline cursor-pointer">Política de Privacidad</span>
@@ -750,6 +750,7 @@
             // Perform Purchase
             state.wallet -= total;
             state.library = [...new Set([...state.library, ...state.cart])];
+            (state.meta.hist = state.meta.hist || []).unshift({ t: Date.now(), items: state.cart.slice(), total }); state.meta.hist.length = Math.min(state.meta.hist.length, 40);
             state.cart = [];
             state.meta.free++; addXP(Math.round(total) + 20); coins(10); snd('win');
             saveState();
@@ -782,7 +783,7 @@
             'Mejor valorados': g => POS[g.rating] >= 90, Destacados: g => g.discount >= 50 || POS[g.rating] >= 97,
             Wishlist: g => state.wishlist.includes(g.id)
         };
-        const matchCat = (g, c) => c === 'all' || (CATF[c] ? CATF[c](g) : g.categories.some(x => x.toLowerCase() === c.toLowerCase()));
+        const matchCat = (g, c) => c === 'all' || (c.startsWith('dev:') ? g.developer === c.slice(4) : CATF[c] ? CATF[c](g) : g.categories.some(x => x.toLowerCase() === c.toLowerCase()));
         const CATS = ['Acción', 'RPG', 'FPS', 'Estrategia', 'Supervivencia', 'Mundo Abierto', 'Cooperativo', 'Multijugador', 'Indie', 'Simulación', 'Aventura'];
         const FEAT = [9000001, 1245620, 1091500, 2358720, 990080, 1623730, 730, 1174180, 1086940];
         const im = (g, k) => k === 'hero'
@@ -853,7 +854,7 @@
             const list = GAMES_DATA.filter(g => (g.title.toLowerCase().includes(q) || g.tags.some(t => t.toLowerCase().includes(q))) && matchCat(g, cat));
             const el = document.getElementById('app-container');
             if (!home) {
-                el.innerHTML = `<h2 class="sec-t" style="margin-top:0">${q ? 'Resultados para «' + q + '»' : cat === 'Wishlist' ? 'Tu lista de deseados' : CATF[cat] ? cat : 'Categoría: ' + cat}
+                el.innerHTML = `<h2 class="sec-t" style="margin-top:0">${q ? 'Resultados para «' + q + '»' : cat === 'Wishlist' ? 'Tu lista de deseados' : cat.startsWith('dev:') ? 'Desarrollador: ' + cat.slice(4) : CATF[cat] ? cat : 'Categoría: ' + cat}
                     <span class="text-steam-textMuted font-normal normal-case tracking-normal">${list.length} resultados</span></h2>
                     ${list.map(row).join('') || '<div class="text-center py-16 text-gray-400 bg-black/20 rounded">No se encontraron juegos.</div>'}`;
                 return;
@@ -861,7 +862,7 @@
             const deals = GAMES_DATA.filter(g => g.discount > 0).sort((a, b) => b.discount - a.discount).slice(0, 14);
             const free = GAMES_DATA.filter(g => fin(g) === 0);
             const top = GAMES_DATA.filter(g => POS[g.rating] >= 97).slice(0, 8);
-            el.innerHTML = `<h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
+            el.innerHTML = `${eventBanner()}<h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
                 <div id="hero-box">${heroHTML()}</div><div class="dots" id="hero-dots">${heroDots()}</div>
                 <h2 class="sec-t">Ofertas especiales <button onclick="filterCategory('Ofertas')">Ver todas las ofertas ›</button></h2>
                 <div class="strip">${deals.map(cap).join('')}</div>
@@ -898,6 +899,7 @@
                     <h2 class="h-sec">Acerca de este juego</h2>
                     <p class="text-sm leading-relaxed text-gray-300">${g.description}</p>
                     <div class="flex flex-wrap gap-1.5 mt-4">${g.categories.map(c => `<span class="chip" style="font-size:12px;padding:4px 10px">${c}</span>`).join('')}</div>
+                    <h2 class="h-sec">Reseñas de jugadores</h2><div id="rv-box" class="text-sm text-steam-textMuted">Cargando reseñas…</div>
                     <h2 class="h-sec">Requisitos del sistema <span class="text-steam-textMuted normal-case font-normal tracking-normal">(valores de ejemplo)</span></h2>
                     <div class="grid sm:grid-cols-2 gap-3">${rq('MÍNIMOS', [['SO', 'Windows 10 64-bit'], ['Procesador', 'Intel Core i5-8400 / Ryzen 5 1500X'], ['Memoria', '8 GB de RAM'], ['Gráficos', 'GTX 970 / RX 570'], ['Almacenamiento', '50 GB']])}
                         ${rq('RECOMENDADOS', [['SO', 'Windows 11 64-bit'], ['Procesador', 'Intel Core i7-10700 / Ryzen 7 3700X'], ['Memoria', '16 GB de RAM'], ['Gráficos', 'RTX 2060 / RX 5700'], ['Almacenamiento', 'SSD, 50 GB']])}</div>
@@ -907,12 +909,13 @@
                     <div class="kv"><span>RESEÑAS:</span><span class="rv">${g.rating}</span></div>
                     <div class="bar mb-1"><i style="width:${pos}%"></i></div><div class="text-[11px] text-steam-textMuted mb-3">${pos}% positivas · ${g.reviewsCount} reseñas</div>
                     <div class="kv"><span>LANZAMIENTO:</span><span>${g.releaseDate}</span></div>
-                    <div class="kv"><span>DESARROLLADOR:</span><span class="rv">${g.developer}</span></div>
+                    <div class="kv"><span>DESARROLLADOR:</span><span class="rv"><button class="hover:underline" data-c="dev:${g.developer}" onclick="filterCategory(this.dataset.c)">${g.developer}</button></span></div>
                     <div class="kv"><span>EDITOR:</span><span class="rv">${g.publisher}</span></div>
                     <div class="text-[11px] text-steam-textMuted mt-4 mb-1">Etiquetas populares para este producto:</div>
                     <div class="flex flex-wrap gap-1">${g.tags.map(t => `<button class="chip" style="font-size:11px;padding:3px 8px" onclick="state.searchQuery='${t.toLowerCase().replace(/'/g, '')}';navigateTo('store')">${t}</button>`).join('')}</div>
                     ${g.dl ? `<div class="mt-4 text-xs bg-black/30 border border-white/10 rounded p-3 text-gray-300"><b class="text-white"><i class="fa-solid fa-download"></i> Juego para ${g.os}${g.dlPath ? ' · 🔒 descarga exclusiva de esta tienda' : ''}</b><br>Se descarga y se juega en tu PC (${g.size}). ${g.note || ''}</div>` : ''}${(g.ext || g.id === VR_ID) ? '<div id="lb" class="mt-4 text-xs text-steam-textMuted">Cargando ranking…</div>' : ''}${own ? `<button class="bgreen w-full mt-4" onclick="playGame(${g.id})">${g.dl ? '<i class="fa-solid fa-download"></i> Descargar para ' + g.os : '<i class="fa-solid fa-play"></i> Jugar'}</button>` : ''}</aside></div>
                 <h2 class="sec-t">Juegos similares</h2><div class="strip">${sim.map(cap).join('')}</div></div>`;
+            loadReviews(g.id);
             if (g.ext || g.id === VR_ID) loadLB(g.id);
         }
         function setShot(btn) {
@@ -984,6 +987,8 @@
             else if (state.view === 'library') renderLibraryView();
             else if (state.view === 'loot') renderLootView();
             else if (state.view === 'community') renderCommunityView();
+            else if (state.view === 'profile') renderProfileView();
+            else if (state.view === 'history') renderHistoryView();
         }
 
         // INITIALIZATION ON LOAD
@@ -1023,7 +1028,7 @@
             _uh(); animWallet();
             const on = state.view === 'loot', g = 'text-gray-300 hover:text-steam-blue transition-colors';
             document.getElementById('nav-loot').className = on ? 'text-amber-400 border-b-2 border-amber-400 pb-0.5 font-bold' : 'text-amber-400/80 font-semibold hover:text-amber-300';
-            const cm = state.view === 'community';
+            const cm = ['community', 'profile', 'history'].includes(state.view);
             document.getElementById('nav-com').className = cm ? 'text-steam-blue border-b-2 border-steam-blue pb-0.5 font-bold' : g;
             if (on || cm) { document.getElementById('nav-store').className = g; document.getElementById('nav-library').className = g; }
             document.getElementById('com-dot').classList.toggle('hidden', !state.pendIn);
@@ -1226,15 +1231,7 @@
             postScore(g.id, sc);
         }
         function postScore(id, score) { if (SB && ME && score > 0) SB.from('scores').insert({ user_id: ME.id, game_id: String(id), score }).then(() => {}); }
-        async function loadLB(id) {
-            const box = document.getElementById('lb'); if (!box || !SB) return;
-            const { data, error } = await SB.from('scores').select('score,profiles(username)').eq('game_id', String(id)).order('score', { ascending: false }).limit(40);
-            if (!document.getElementById('lb')) return;
-            if (error) { box.textContent = 'Ranking no disponible (falta crear la tabla scores en Supabase).'; return; }
-            const best = {}; (data || []).forEach(r => { const u = r.profiles ? r.profiles.username : '?'; if (!(u in best)) best[u] = r.score; });
-            box.innerHTML = '<div class="text-white font-bold mb-1">🏆 Mejores puntuaciones</div>' + (Object.entries(best).slice(0, 5).map(([u, sc], i) => `<div class="kv"><span>${i + 1}. ${u}</span><span class="r-l">${sc}</span></div>`).join('') || 'Sé el primero en el ranking.');
-        }
-
+        
         const $v = id => document.getElementById(id);
 
         // ===== CUENTAS, NUBE Y AMIGOS (Supabase) =====
@@ -1246,7 +1243,7 @@
         const snapshot = () => ({ cart: state.cart, library: state.library, wallet: state.wallet, wishlist: state.wishlist, meta: state.meta, vrhi: +localStorage.getItem('vr_hi') || 0 });
         const authMsg = t => { document.getElementById('au-msg').textContent = t; };
         function cloudSave() { if (!ME || !SB) return; clearTimeout(cloudT); cloudT = setTimeout(cloudFlush, 1200); }
-        async function cloudFlush() { if (ME) await SB.from('saves').update({ data: snapshot(), updated_at: new Date().toISOString() }).eq('id', ME.id); }
+        async function cloudFlush() { if (!ME) return; await SB.from('saves').update({ data: snapshot(), updated_at: new Date().toISOString() }).eq('id', ME.id); SB.from('profiles').update({ stats: pubStats() }).eq('id', ME.id).then(() => {}); }
         document.addEventListener('visibilitychange', () => { if (document.hidden) cloudFlush(); });
         function applyCloud(d) {
             state.cart = d.cart || []; state.library = d.library || [730]; state.wallet = typeof d.wallet === 'number' ? d.wallet : 100;
@@ -1286,7 +1283,7 @@
                 ME.name = p.username; applyCloud((sv && sv.data) || {});
                 document.getElementById('auth').style.display = 'none';
                 const h = document.getElementById('hdr-user'); h.textContent = ME.name; h.previousElementSibling.textContent = ME.name[0].toUpperCase();
-                state.view = 'store'; boot(); heartbeat();
+                state.view = 'store'; boot(); heartbeat(); cloudSave();
             } catch (e) { authMsg('Error al entrar: ' + e.message); }
         }
         async function initAuth() {
@@ -1322,7 +1319,7 @@
             const el = document.getElementById('app-container');
             if (!document.getElementById('fr-list') || !silent) {
                 el.innerHTML = `<div class="lt mb-4 flex flex-wrap items-center justify-between gap-3"><div><div class="text-xs text-steam-textMuted">Tu cuenta</div><div class="text-xl text-white font-bold">${ME.name}</div></div>
-                    <div class="flex gap-2 items-center flex-wrap"><input id="fr-in" class="in" style="margin:0;width:210px" placeholder="Usuario de tu amigo" onkeydown="if(event.key==='Enter')addFriend()"><button class="bgreen" onclick="addFriend()">Enviar solicitud</button><button class="btn2" onclick="logout()">Cerrar sesión</button></div></div>
+                    <div class="flex gap-2 items-center flex-wrap"><input id="fr-in" class="in" style="margin:0;width:210px" placeholder="Usuario de tu amigo" onkeydown="if(event.key==='Enter')addFriend()"><button class="bgreen" onclick="addFriend()">Enviar solicitud</button><button class="btn2" onclick="openProfile('${ME.id}')">Mi perfil</button><button class="btn2" onclick="navigateTo('history')">Historial y cupones</button><button class="btn2" onclick="logout()">Cerrar sesión</button></div></div>
                     <div id="fr-list"><div class="text-center py-10 text-gray-400">Cargando amigos…</div></div>`;
             }
             const { data: fr, error } = await SB.from('friendships').select('*').or(`requester.eq.${ME.id},addressee.eq.${ME.id}`);
@@ -1336,9 +1333,91 @@
             const fl = fr.filter(f => f.status === 'accepted').sort((a, b) => onl(who(b)) - onl(who(a))), inc = fr.filter(f => f.status === 'pending' && f.addressee === ME.id), out = fr.filter(f => f.status === 'pending' && f.requester === ME.id);
             box.innerHTML = (inc.length ? `<h2 class="sec-t" style="margin-top:0">Solicitudes recibidas (${inc.length})</h2>${inc.map(f => `<div class="fr"><span class="dot ${onl(who(f)) ? 'on' : ''}"></span><b class="text-white flex-1">${who(f).username}</b><button class="bgreen" onclick="friendAct(${f.id},'ok')">Aceptar</button><button class="btn2" onclick="friendAct(${f.id},'del')">Rechazar</button></div>`).join('')}` : '')
                 + `<h2 class="sec-t" style="margin-top:${inc.length ? 22 : 0}px">Amigos (${fl.length}) <span class="text-steam-textMuted font-normal normal-case tracking-normal">${fl.filter(f => onl(who(f))).length} en línea</span></h2>`
-                + (fl.map(f => `<div class="fr"><span class="dot ${onl(who(f)) ? 'on' : ''}"></span><b class="text-white flex-1">${who(f).username}</b><span class="text-xs ${onl(who(f)) ? 'text-green-400' : 'text-steam-textMuted'}">${onl(who(f)) ? 'En línea' : 'Visto ' + ago(who(f))}</span><button class="btn2" onclick="if(confirm('¿Eliminar amigo?'))friendAct(${f.id},'del')">✕</button></div>`).join('') || '<div class="text-center py-10 text-gray-400 bg-black/20 rounded">Aún no tienes amigos. Envía una solicitud con su nombre de usuario.</div>')
+                + (fl.map(f => `<div class="fr"><span class="dot ${onl(who(f)) ? 'on' : ''}"></span><button class="text-white font-bold flex-1 text-left hover:text-steam-blue" onclick="openProfile('${who(f).id}')">${who(f).username}</button><span class="text-xs ${onl(who(f)) ? 'text-green-400' : 'text-steam-textMuted'}">${onl(who(f)) ? 'En línea' : 'Visto ' + ago(who(f))}</span><button class="btn2" onclick="if(confirm('¿Eliminar amigo?'))friendAct(${f.id},'del')">✕</button></div>`).join('') || '<div class="text-center py-10 text-gray-400 bg-black/20 rounded">Aún no tienes amigos. Envía una solicitud con su nombre de usuario.</div>')
                 + (out.length ? `<h2 class="sec-t">Solicitudes enviadas</h2>${out.map(f => `<div class="fr"><b class="text-white flex-1">${who(f).username}</b><span class="text-xs text-steam-textMuted">Pendiente</span><button class="btn2" onclick="friendAct(${f.id},'del')">Cancelar</button></div>`).join('')}` : '');
         }
+        // ===== v21: perfiles, reseñas, ranking semanal, eventos, historial y cupones =====
+        const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const EVENTS = [{ n: 'Semana de la Comunidad', from: '2026-10-26', to: '2026-11-02', games: [9000001, 9100001, 9100002], d: 'Los juegos hechos por la comunidad, destacados toda la semana.' }];   // edita fechas y juegos aquí
+        function eventBanner() {
+            const now = Date.now(), e = EVENTS.find(x => now < new Date(x.to + 'T23:59:59')); if (!e) return '';
+            const st = new Date(e.from + 'T00:00:00'), live = now >= st, ms = (live ? new Date(e.to + 'T23:59:59') : st) - now, d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5);
+            return `<div class="rounded p-5 mb-6 border border-purple-300/40" style="background:linear-gradient(90deg,#3b1d6e,#8a2be2 60%,#ff7ab8)"><div class="flex flex-wrap justify-between gap-3 items-center mb-3"><div><div class="text-xs tracking-widest text-white/80">${live ? 'EVENTO EN CURSO' : 'PRÓXIMO EVENTO'}</div><h2 class="text-2xl font-black text-white">${esc(e.n)}</h2><div class="text-sm text-white/90">${esc(e.d)}</div></div><div class="text-white font-bold">${live ? 'Termina en' : 'Empieza en'} ${d} d ${h} h</div></div><div class="strip">${e.games.map(byId).filter(Boolean).map(cap).join('')}</div></div>`;
+        }
+        // Reseñas reales
+        async function loadReviews(id) {
+            const box = document.getElementById('rv-box'); if (!box || !SB) return;
+            const { data, error } = await SB.from('reviews').select('user_id,up,body,profiles(username)').eq('game_id', String(id)).order('created_at', { ascending: false }).limit(60);
+            if (!document.getElementById('rv-box')) return;
+            if (error) { box.textContent = 'Reseñas no disponibles (falta crear la tabla reviews en Supabase).'; return; }
+            const n = data.length, up = data.filter(r => r.up).length, mine = data.find(r => r.user_id === ME.id), own = state.library.includes(id);
+            box.innerHTML = `<div class="flex items-center gap-3 mb-3"><b class="text-white text-lg">${n ? Math.round(up / n * 100) + '% positivas' : 'Sin reseñas todavía'}</b><span class="text-xs">${n} reseña${n === 1 ? '' : 's'} de jugadores</span></div>`
+                + (own ? `<textarea id="rv-t" maxlength="400" class="in" style="margin:0;min-height:70px" placeholder="Escribe tu opinión (opcional)">${esc(mine ? mine.body : '')}</textarea><div class="flex gap-2 mt-2 mb-3"><button class="bgreen" onclick="postReview(${id},true)">👍 Recomendar</button><button class="btn2" onclick="postReview(${id},false)">👎 No recomendar</button>${mine ? '<span class="text-xs self-center">Ya reseñaste: puedes editarla.</span>' : ''}</div>` : '<p class="text-xs mb-3">Añade el juego a tu biblioteca para poder reseñarlo.</p>')
+                + data.slice(0, 8).map(r => `<div class="bg-black/25 rounded p-3 mb-2"><div class="text-xs mb-1"><b class="text-white">${esc(r.profiles ? r.profiles.username : '?')}</b> · ${r.up ? '👍 Recomendado' : '👎 No recomendado'}</div><div class="text-sm text-gray-300">${esc(r.body)}</div></div>`).join('');
+        }
+        async function postReview(id, up) {
+            if (!ME || !state.library.includes(id)) return showToast('Primero añade el juego', 'Solo puedes reseñar juegos de tu biblioteca.');
+            const body = document.getElementById('rv-t').value.trim().slice(0, 400);
+            const { error } = await SB.from('reviews').upsert({ user_id: ME.id, game_id: String(id), up, body }, { onConflict: 'user_id,game_id' });
+            showToast(error ? 'Error' : '¡Reseña publicada!', error ? error.message : ''); loadReviews(id);
+        }
+        // Ranking semanal con premio
+        const weekStart = o => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7) - 7 * o); return d; };
+        let lbTab = 'week';
+        async function loadLB(id, tab) {
+            if (tab) lbTab = tab; const box = document.getElementById('lb'); if (!box || !SB) return;
+            let q = SB.from('scores').select('score,user_id,profiles(username)').eq('game_id', String(id)).order('score', { ascending: false }).limit(60);
+            if (lbTab === 'week') q = q.gte('created_at', weekStart(0).toISOString());
+            const { data, error } = await q; if (!document.getElementById('lb')) return;
+            if (error) { box.textContent = 'Ranking no disponible (falta crear la tabla scores en Supabase).'; return; }
+            const best = {}; (data || []).forEach(r => { const u = r.profiles ? r.profiles.username : '?'; if (!(u in best)) best[u] = r.score; });
+            let prize = '';
+            if (lbTab === 'week') {
+                const key = id + ':' + weekStart(1).toISOString().slice(0, 10);
+                if (!(state.meta.wk && state.meta.wk[key])) {
+                    const { data: pw } = await SB.from('scores').select('score,user_id').eq('game_id', String(id)).gte('created_at', weekStart(1).toISOString()).lt('created_at', weekStart(0).toISOString()).order('score', { ascending: false }).limit(1);
+                    if (pw && pw[0] && pw[0].user_id === ME.id) prize = `<button class="bgreen w-full mt-2" onclick="claimWeek('${key}',${id})">🏆 Ganaste la semana pasada: reclamar $20</button>`;
+                }
+            }
+            box.innerHTML = `<div class="flex gap-2 mb-2"><button class="chip ${lbTab === 'week' ? '' : 'opacity-60'}" onclick="loadLB(${id},'week')">Esta semana</button><button class="chip ${lbTab === 'all' ? '' : 'opacity-60'}" onclick="loadLB(${id},'all')">Histórico</button></div><div class="text-white font-bold mb-1">🏆 Mejores puntuaciones</div>`
+                + (Object.entries(best).slice(0, 5).map(([u, sc], i) => `<div class="kv"><span>${i + 1}. ${esc(u)}</span><span class="r-l">${sc}</span></div>`).join('') || 'Sé el primero en el ranking.') + prize;
+        }
+        function claimWeek(key, id) {
+            const m = state.meta; m.wk = m.wk || {}; if (m.wk[key]) return; m.wk[key] = 1; state.wallet += 20; saveState(); showToast('¡Premio de la semana!', '+$20.00 de saldo'); coins(12); snd('win'); loadLB(id);
+        }
+        // Perfiles públicos
+        function pubStats() {
+            const gs = (state.meta.gsave || {})[VR_ID], camp = (gs && gs.camp) || [];
+            return { lvl: lvl(), stars: camp.reduce((a, b) => a + b, 0), levels: camp.filter(v => v > 0).length, cards: (state.meta.badges || []).length, games: state.library.length, favs: state.wishlist.slice(0, 6) };
+        }
+        function openProfile(id) { state.profileId = id; navigateTo('profile'); }
+        async function renderProfileView() {
+            const el = document.getElementById('app-container'); el.innerHTML = '<div class="text-center py-16 text-gray-400">Cargando perfil…</div>';
+            const { data: p, error } = await SB.from('profiles').select('id,username,last_seen,created_at,stats').eq('id', state.profileId).maybeSingle();
+            if (state.view !== 'profile') return; if (error || !p) { el.innerHTML = '<div class="text-center py-16 text-gray-400">Perfil no encontrado.</div>'; return; }
+            const s = p.stats || {}, onl = Date.now() - new Date(p.last_seen) < 90000, favs = (s.favs || []).map(byId).filter(Boolean), l = s.lvl || 1, title = l < 4 ? 'Recluta' : l < 8 ? 'Piloto' : l < 12 ? 'Veterano' : 'Leyenda';
+            const medals = [(s.stars || 0) >= 30 ? '⭐ 30+ estrellas' : '', (s.cards || 0) >= 3 ? '🏅 Coleccionista' : '', (s.levels || 0) >= 20 ? '👑 Campaña completa' : '', (s.games || 0) >= 10 ? '🎮 10+ juegos' : ''].filter(Boolean);
+            el.innerHTML = `<div class="lt mb-4"><div class="flex flex-wrap items-center gap-4"><div class="w-20 h-20 rounded bg-gradient-to-br from-blue-600 to-cyan-400 flex items-center justify-center text-4xl font-black text-white">${esc(p.username[0].toUpperCase())}</div>
+                <div class="flex-1"><div class="text-2xl text-white font-bold">${esc(p.username)} <span class="dot ${onl ? 'on' : ''}" style="display:inline-block"></span></div><div class="text-sm text-steam-textMuted">${title} · nivel ${l} · miembro desde ${new Date(p.created_at).toLocaleDateString('es')}</div>
+                <div class="mt-2 flex flex-wrap gap-2">${medals.map(m => `<span class="chip" style="font-size:12px;padding:3px 10px">${m}</span>`).join('') || '<span class="text-xs text-steam-textMuted">Aún sin insignias</span>'}</div></div>
+                <button class="btn2" onclick="navigateTo('community')">← Comunidad</button></div></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">${[['Nivel', l], ['Estrellas de campaña', (s.stars || 0) + '/60'], ['Sets de cromos', s.cards || 0], ['Juegos', s.games || 0]].map(([a, b]) => `<div class="lt text-center"><div class="text-2xl text-white font-bold">${b}</div><div class="text-xs text-steam-textMuted">${a}</div></div>`).join('')}</div>
+                <h2 class="sec-t">Juegos favoritos</h2>${favs.length ? `<div class="cgrid">${favs.map(cap).join('')}</div>` : '<div class="text-sm text-steam-textMuted">Todavía no tiene juegos en su lista de deseados.</div>'}`;
+        }
+        // Historial de compras y cupones (canje validado en el servidor)
+        function renderHistoryView() {
+            const h = state.meta.hist || [];
+            document.getElementById('app-container').innerHTML = `<div class="flex justify-between items-center mb-4"><h2 class="text-2xl text-white font-bold">Historial y cupones</h2><button class="btn2" onclick="navigateTo('community')">← Comunidad</button></div>
+                <div class="lt mb-4"><h2 class="lt-h">🎟 Canjear cupón</h2><div class="flex gap-2"><input id="cp-in" class="in" style="margin:0;max-width:260px" placeholder="Código" maxlength="30" onkeydown="if(event.key==='Enter')redeem()"><button class="bgreen" onclick="redeem()">Canjear</button></div></div>
+                <h2 class="sec-t">Compras recientes</h2>${h.map(x => `<div class="lt mb-2 flex justify-between gap-3"><div><div class="text-xs text-steam-textMuted">${new Date(x.t).toLocaleString('es')}</div><div class="text-white text-sm">${x.items.map(byId).filter(Boolean).map(g => esc(g.title)).join(', ')}</div></div><b class="text-white">$${(+x.total).toFixed(2)}</b></div>`).join('') || '<div class="text-sm text-steam-textMuted">Todavía no hiciste compras.</div>'}`;
+        }
+        async function redeem() {
+            const c = document.getElementById('cp-in').value.trim().toUpperCase(); if (!c || !SB) return;
+            const { data, error } = await SB.rpc('redeem_coupon', { c });
+            if (error || data == null) return showToast('Cupón no válido', error ? error.message : 'No existe o ya lo usaste.');
+            state.wallet += data; saveState(); showToast('¡Cupón canjeado!', '+$' + data + ' de saldo'); coins(10); snd('win'); document.getElementById('cp-in').value = '';
+        }
+
         window.onload = initAuth;
 
         function boot() {
