@@ -153,53 +153,77 @@
         .side-b h4{font-size:11px;letter-spacing:.1em;color:#8f98a0;margin:0 0 6px;font-weight:700}
         .side-i{display:flex;justify-content:space-between;width:100%;padding:6px 8px;font-size:13px;color:#c7d5e0;text-align:left;border-radius:2px}
         .side-i:hover{background:#ffffff14;color:#fff}.side-i span{color:#6b7f8f;font-size:11px}
+
+        body{padding-bottom:36px}
+        .cl-top{background:#171d25;border-bottom:1px solid #000;box-shadow:0 4px 14px #0008}
+        .cl-menu{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 14px;font-size:12px;color:#b8b6b4;background:#171a21;flex-wrap:wrap}
+        .cl-menu .l,.cl-menu .r{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.cl-menu .r{gap:8px}
+        .cl-m{position:relative}.cl-m>button{padding:3px 8px;color:#b8b6b4;font-size:12px}.cl-m>button:hover{color:#fff}
+        .pop2{display:none;position:absolute;top:100%;left:0;z-index:90;background:#2a475e;min-width:210px;box-shadow:0 10px 25px #000b;border:1px solid #000}.pop2.right{left:auto;right:0}
+        .cl-m:hover .pop2,.cl-m:focus-within .pop2{display:block}
+        .pop2 button{display:block;width:100%;text-align:left;padding:8px 14px;color:#dcdedf;font-size:13px}.pop2 button:hover{background:#66c0f4;color:#0e141b}
+        .cl-pill{display:flex;align-items:center;gap:8px;background:#212b36;border:1px solid #ffffff1a;border-radius:3px;padding:3px 10px}
+        .cl-plus{background:#2a475e;color:#fff;font-weight:700;padding:1px 6px;border-radius:2px;font-size:10px}
+        .cl-cart{display:flex;align-items:center;gap:6px;background:#5c7e10;color:#fff;font-weight:700;padding:4px 10px;border-radius:3px}.cl-cart:hover{background:#6fa720}
+        .cl-bell{position:relative;background:#2a475e;color:#fff;padding:4px 10px;border-radius:3px}.cl-bell span{position:absolute;top:-5px;right:-5px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;border-radius:9px;min-width:16px;padding:0 4px}
+        .cl-user{display:flex;align-items:center;gap:6px;background:#2a475e;border-radius:3px;padding:2px 8px 2px 3px!important;color:#66c0f4!important;font-weight:700}
+        #hdr-av .avt{border-radius:3px}
+        .cl-nav{display:flex;align-items:center;gap:20px;padding:8px 14px 2px;flex-wrap:wrap}
+        .cl-arrow{color:#8f98a0;font-size:20px;padding:0 4px;line-height:1}.cl-arrow:hover:not(:disabled){color:#fff}.cl-arrow:disabled{opacity:.3;cursor:default}
+        .cl-tab{font-size:18px;font-weight:600;letter-spacing:.3px;color:#fff;padding:2px 0 3px;border-bottom:3px solid transparent;text-transform:uppercase}
+        .cl-tab:hover{color:#1a9fff}.cl-tab.on{color:#1a9fff;border-bottom-color:#1a9fff}
+        .cl-url{padding:2px 14px 6px;font-size:11px;color:#6b7f8f;display:flex;gap:8px;align-items:center}
+        .cl-bar{position:fixed;left:0;right:0;bottom:0;height:34px;background:#171a21;border-top:1px solid #000;display:flex;justify-content:space-between;align-items:center;padding:0 16px;font-size:12px;color:#8f98a0;z-index:60}.cl-bar button:hover{color:#fff}
+        #toast-notification{bottom:3rem!important}
+
+        .hc{max-width:1200px;margin:0 auto}
+        .hwrap{position:relative;margin:0 calc(50% - 50vw);overflow:hidden;padding:0 0 4px}
+        .hcen{max-width:1200px;margin:0 auto;position:relative;z-index:2}
+        .hpeek{position:absolute;top:22px;bottom:26px;width:calc(50% - 604px);opacity:.38;filter:brightness(.65);cursor:pointer;overflow:hidden;z-index:1;transition:opacity .2s}
+        .hpeek:hover{opacity:.7}.hpeek.l{left:0}.hpeek.r{right:0}
+        .hpeek img{position:absolute;top:0;height:100%;width:340px;object-fit:cover}.hpeek.l img{right:0}.hpeek.r img{left:0}
+        .hpeek.l:after,.hpeek.r:after{position:absolute;top:42%;font-size:64px;line-height:1;color:#fff;text-shadow:0 2px 10px #000}
+        .hpeek.l:after{content:'‹';right:14px}.hpeek.r:after{content:'›';left:14px}
+        @media(max-width:1260px){.hpeek{display:none}}@media(min-width:1261px){.hero .arrow{display:none}}
+        .evh{position:relative;margin:-24px calc(50% - 50vw) 26px;height:min(460px,40vw);min-height:300px;overflow:hidden;background:#06122b}
+        .evsvg{position:absolute;inset:0;width:100%;height:100%}
+        .evh-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px}
+        .evh-1{font:900 clamp(18px,3vw,38px)/1 'Arial Black',Impact,sans-serif;color:#fff;letter-spacing:2px;-webkit-text-stroke:2px #05101f;paint-order:stroke fill;text-shadow:0 4px 0 #05101f}
+        .evh-2{font:900 clamp(60px,12vw,170px)/.9 Impact,'Arial Black',sans-serif;color:#7cfc20;-webkit-text-stroke:5px #0b3d12;paint-order:stroke fill;text-shadow:0 6px 0 #0b3d12,0 0 28px #5dff3f88;transform:rotate(-2deg);letter-spacing:2px}
+        .evh-3{font:900 clamp(16px,2.6vw,34px)/1 'Arial Black',sans-serif;color:#fff;-webkit-text-stroke:2px #05101f;paint-order:stroke fill;margin-top:4px;background:#05101fcc;padding:4px 18px}
+        .evh-4{margin-top:12px;font:900 clamp(13px,1.8vw,24px)/1 'Arial Black',sans-serif;color:#9dff6a;letter-spacing:2px;text-shadow:0 2px 0 #000}
+        .evh-5{margin-top:8px;font:800 clamp(10px,1.3vw,16px)/1.2 'Arial Black',sans-serif;color:#fff;background:#000;border:2px solid #fff;padding:6px 18px;letter-spacing:1px}
     </style>
 </head>
 <body class="h-full steam-gradient-bg min-h-screen flex flex-col antialiased">
 
     <!-- TOP STEAM NAVIGATION BAR -->
-    <header class="bg-steam-headerBg border-b border-black/40 sticky top-0 z-50 shadow-xl">
-        <div class="max-w-[1380px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-            
-            <!-- Logo & Main Nav -->
-            <div class="flex items-center space-x-8">
-                <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('store')">
-                    <i class="fa-brands fa-steam text-4xl text-white hover:text-steam-blue transition-colors"></i>
-                    <span class="text-2xl font-black tracking-widest text-white uppercase italic">STEAM</span>
-                </div>
-
-                <nav class="hidden md:flex space-x-6 text-sm font-semibold tracking-wider uppercase">
-                    <button onclick="navigateTo('store')" id="nav-store" class="hover:text-steam-blue transition-colors text-steam-blue border-b-2 border-steam-blue pb-0.5">Tienda</button>
-                    <button onclick="navigateTo('library')" id="nav-library" class="hover:text-steam-blue transition-colors text-gray-300">Biblioteca</button>
-                    <button onclick="navigateTo('community')" id="nav-com" class="hover:text-steam-blue transition-colors text-gray-300">Comunidad <span id="com-dot" class="inline-block w-2 h-2 rounded-full bg-red-500 hidden"></span></button>
-                    <button onclick="navigateTo('loot')" id="nav-loot" class="text-amber-400/80 font-semibold">🎁 Botín <span id="loot-dot" class="inline-block w-2 h-2 rounded-full bg-red-500 hidden"></span></button>
-                </nav>
+    <header class="cl-top sticky top-0 z-50">
+        <div class="cl-menu">
+            <div class="l">
+                <span class="flex items-center gap-1 mr-1"><i class="fa-brands fa-steam"></i><span>Steam</span></span>
+                <div class="cl-m"><button>Steam</button><div class="pop2"><button onclick="ME&&openProfile(ME.id)">Ver mi perfil</button><button onclick="navigateTo('profile-edit')">Editar perfil</button><button onclick="navigateTo('history')">Historial y cupones</button><button onclick="logout()">Cerrar sesión</button></div></div>
+                <div class="cl-m"><button>Ver</button><div class="pop2"><button onclick="navigateTo('store')">Tienda</button><button onclick="navigateTo('library')">Biblioteca</button><button onclick="navigateTo('community')">Comunidad</button><button onclick="navigateTo('loot')">Botín</button><button onclick="navigateTo('downloads')">Descargas</button></div></div>
+                <div class="cl-m"><button>Amigos</button><div class="pop2"><button onclick="navigateTo('community')">Ver amigos y solicitudes</button><button onclick="ME&&openProfile(ME.id)">Mi perfil</button></div></div>
+                <div class="cl-m"><button>Juegos</button><div class="pop2"><button onclick="navigateTo('library')">Mi biblioteca</button><button onclick="filterCategory('Wishlist')">Lista de deseados</button><button onclick="navigateTo('history')">Activar un producto (cupón)</button></div></div>
+                <div class="cl-m"><button>Ayuda</button><div class="pop2"><button onclick="navigateTo('about')">Acerca de este simulador</button><button onclick="showToast('Soporte','Escríbele al creador del proyecto.')">Soporte</button></div></div>
             </div>
-
-            <!-- User Info, Wallet & Cart Trigger -->
-            <div class="flex items-center space-x-4 text-xs">
-                
-                <!-- Add Funds Quick Pill -->
-                <div class="bg-[#212b36] hover:bg-[#2a3847] transition-colors rounded px-3 py-1.5 flex items-center space-x-2 border border-white/10">
-                    <i class="fa-solid fa-wallet text-steam-blue"></i>
-                    <span>Saldo: <strong id="user-wallet" class="text-white">$100.00</strong></span>
-                    <button onclick="addFunds(25)" class="ml-2 bg-steam-accent hover:bg-steam-blue/30 text-white font-bold px-1.5 py-0.5 rounded text-[10px]" title="Añadir $25 ficticios">+ $25</button>
-                </div>
-
-                <!-- Cart Button -->
-                <button onclick="toggleCartModal(true)" class="bg-[#5c7e10] hover:bg-[#6fa720] text-white px-3 py-1.5 rounded flex items-center space-x-2 font-bold shadow transition-all relative">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Carro</span>
-                    <span id="cart-count-badge" class="bg-red-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-extrabold hidden">0</span>
-                </button>
-
-                <!-- User Profile Badge -->
-                <div class="flex items-center space-x-2 pl-2 border-l border-gray-700">
-                    <div class="w-7 h-7 rounded bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center font-bold text-white shadow">O</div>
-                    <span id="hdr-user" class="font-bold text-gray-200 hidden sm:inline">OEMILIANO43000</span>
-                </div>
+            <div class="r">
+                <div class="cl-pill"><i class="fa-solid fa-wallet" style="color:#66c0f4"></i><span>Saldo: <strong id="user-wallet" class="text-white">$100.00</strong></span><button onclick="addFunds(25)" class="cl-plus" title="Añadir $25 ficticios">+ $25</button></div>
+                <button onclick="toggleCartModal(true)" class="cl-cart"><i class="fa-solid fa-cart-shopping"></i><span>Carro</span><span id="cart-count-badge" class="bg-red-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-extrabold hidden">0</span></button>
+                <button onclick="navigateTo('community')" class="cl-bell" title="Solicitudes de amistad"><i class="fa-solid fa-bell"></i><span id="bell-n" class="hidden"></span></button>
+                <div class="cl-m"><button class="cl-user"><span id="hdr-av"></span><span id="hdr-name2">Usuario</span><i class="fa-solid fa-chevron-down" style="font-size:9px"></i></button><div class="pop2 right"><button onclick="ME&&openProfile(ME.id)">Ver mi perfil</button><button onclick="navigateTo('profile-edit')">Editar perfil</button><button onclick="logout()">Cerrar sesión</button></div></div>
             </div>
         </div>
+        <div class="cl-nav">
+            <button class="cl-arrow" id="nav-back" onclick="navBack(-1)" title="Atrás">←</button><button class="cl-arrow" id="nav-fwd" onclick="navBack(1)" title="Adelante">→</button>
+            <button class="cl-tab on" id="nav-store" onclick="navigateTo('store')">Tienda</button>
+            <button class="cl-tab" id="nav-library" onclick="navigateTo('library')">Biblioteca</button>
+            <button class="cl-tab" id="nav-com" onclick="navigateTo('community')">Comunidad <span id="com-dot" class="inline-block w-2 h-2 rounded-full bg-red-500 hidden"></span></button>
+            <button class="cl-tab" id="nav-loot" onclick="navigateTo('loot')" style="color:#fbbf24">🎁 Botín <span id="loot-dot" class="inline-block w-2 h-2 rounded-full bg-red-500 hidden"></span></button>
+            <button class="cl-tab" id="nav-me" onclick="ME&&openProfile(ME.id)"><span id="hdr-user">OEMILIANO43000</span></button>
+        </div>
+        <div class="cl-url"><i class="fa-solid fa-lock" style="font-size:10px"></i><span id="url-line">https://store.steampowered.com/</span></div>
     </header>
 
     <div class="sub"><div id="submenu" class="shell px-4 flex items-center flex-wrap"></div></div>
@@ -257,6 +281,8 @@
 
     
     <!-- TOAST NOTIFICATION -->
+    <div class="cl-bar"><button onclick="navigateTo('history')"><i class="fa-solid fa-square-plus"></i> Agregar un producto</button><button onclick="navigateTo('downloads')"><i class="fa-solid fa-download"></i> Administrar descargas</button><button onclick="navigateTo('community')">Amigos y chat <i class="fa-solid fa-user-group"></i></button></div>
+
     <div id="toast-notification" class="fixed bottom-6 right-6 bg-steam-btnGreen text-white px-5 py-3 rounded shadow-2xl flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 border border-white/20">
         <i class="fa-solid fa-circle-check text-xl"></i>
         <div>
@@ -270,7 +296,7 @@
         <div class="max-w-[1380px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-brands fa-steam text-3xl opacity-50"></i>
-                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 22</p>
+                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 23</p>
             </div>
             <div class="flex space-x-4">
                 <span class="hover:underline cursor-pointer">Política de Privacidad</span>
@@ -636,11 +662,16 @@
         }
 
         // NAVIGATION ROUTER
+        const NH = { h: [], i: -1 };
         function navigateTo(view, gameId = null) {
-            state.view = view;
-            if (gameId !== null) state.selectedGameId = gameId;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            render();
+            state.view = view; if (gameId !== null) state.selectedGameId = gameId;
+            const e = { view, g: state.selectedGameId, p: state.profileId, c: state.selectedCategory, q: state.searchQuery };
+            NH.h.length = NH.i + 1; NH.h.push(e); NH.i = NH.h.length - 1; if (NH.h.length > 60) { NH.h.shift(); NH.i--; }
+            window.scrollTo({ top: 0, behavior: 'smooth' }); render();
+        }
+        function navBack(d) {
+            const j = NH.i + d; if (j < 0 || j >= NH.h.length) return; NH.i = j; const e = NH.h[j];
+            state.view = e.view; state.selectedGameId = e.g; state.profileId = e.p; state.selectedCategory = e.c; state.searchQuery = e.q; window.scrollTo(0, 0); render();
         }
 
         // GLOBAL TOAST NOTIFICATION
@@ -783,14 +814,14 @@
         // HELPERS DE DISEÑO
         const POS = { 'Extremadamente positivas': 97, 'Muy positivas': 90, 'Mayormente positivas': 78, 'Variadas': 62 };
         const byId = id => GAMES_DATA.find(g => g.id === id);
-        const dsc = g => (state.flash && state.flash.id === g.id) ? state.flash.pct : g.discount;
+        const dsc = g => { if (state.flash && state.flash.id === g.id) return state.flash.pct; const e = evNow(); return e && e.extra && g.tags.some(t => e.tags.includes(t)) ? Math.min(90, g.discount + e.extra) : g.discount; };
         const fin = g => g.price * (1 - dsc(g) / 100);
         const CATF = {
-            Ofertas: g => g.discount > 0, Gratis: g => fin(g) === 0, 'Económicos': g => fin(g) > 0 && fin(g) <= 15,
+            Ofertas: g => dsc(g) > 0, Evento: g => { const e = evNow(); return !!e && (e.games.includes(g.id) || g.tags.some(t => e.tags.includes(t))); }, Gratis: g => fin(g) === 0, 'Económicos': g => fin(g) > 0 && fin(g) <= 15,
             'Mejor valorados': g => POS[g.rating] >= 90, Destacados: g => g.discount >= 50 || POS[g.rating] >= 97,
             Wishlist: g => state.wishlist.includes(g.id)
         };
-        const matchCat = (g, c) => c === 'all' || (c.startsWith('dev:') ? g.developer === c.slice(4) : CATF[c] ? CATF[c](g) : g.categories.some(x => x.toLowerCase() === c.toLowerCase()));
+        const matchCat = (g, c) => c === 'all' || (c.startsWith('dev:') ? g.developer === c.slice(4) : CATF[c] ? CATF[c](g) : (g.categories.some(x => x.toLowerCase() === c.toLowerCase()) || g.tags.some(x => x.toLowerCase() === c.toLowerCase())));
         const CATS = ['Acción', 'RPG', 'FPS', 'Estrategia', 'Supervivencia', 'Mundo Abierto', 'Cooperativo', 'Multijugador', 'Indie', 'Simulación', 'Aventura'];
         const FEAT = [9000001, 1245620, 1091500, 2358720, 990080, 1623730, 730, 1174180, 1086940];
         const im = (g, k) => k === 'hero'
@@ -817,24 +848,25 @@
             document.getElementById('submenu').innerHTML = `<button class="sm" onclick="filterCategory('all')">Navegar</button><button class="sm" onclick="filterCategory('Destacados')">Recomendaciones</button>`
                 + dd('Categorías', CATS.map(c => [c, c]))
                 + dd('Formas de jugar', [['Gratis para jugar', 'Gratis'], ['Multijugador', 'Multijugador'], ['Cooperativo', 'Cooperativo']])
-                + dd('Secciones especiales', [['Ofertas', 'Ofertas'], ['Mejor valorados', 'Mejor valorados'], ['Económicos (hasta $15)', 'Económicos']])
+                + dd('Secciones especiales', [['Ofertas', 'Ofertas'], ['Mejor valorados', 'Mejor valorados'], ['Económicos (hasta $15)', 'Económicos'], ['🎃 Festival del Miedo', 'Evento']])
                 + `<div class="sr ml-auto"><input id="search-input" oninput="handleSearch()" placeholder="Buscar en la tienda"><button aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button></div>
                    <button class="sm" onclick="filterCategory('Wishlist')"><i class="fa-solid fa-star"></i> Lista de deseados (<span id="wish-count">0</span>)</button>`;
             updateHeaderState();
         }
 
         function heroHTML() {
-            const g = byId(FEAT[state.fi]);
+            const n = FEAT.length, i = state.fi, g = byId(FEAT[i]), pg = byId(FEAT[(i - 1 + n) % n]), ng = byId(FEAT[(i + 1) % n]);
             const sh = [...g.screenshots, A + g.id + '/capsule_616x353.jpg', g.heroImage, A + g.id + '/library_hero.jpg'].slice(0, 4);
-            return `<div class="hero"><button class="arrow l" onclick="heroGo(-1)" aria-label="Anterior">‹</button>
-                <div class="hero-img" onclick="navigateTo('game',${g.id})">${im(g, 'hero')}<div class="hero-title">${g.title}</div></div>
+            const pk = (x, d) => `<div class="hpeek ${d < 0 ? 'l' : 'r'}" onclick="heroGo(${d})">${im(x, 'hero')}</div>`;
+            return `<div class="hwrap">${pk(pg, -1)}${pk(ng, 1)}<div class="hero hcen"><button class="arrow l" onclick="heroGo(-1)" aria-label="Anterior">‹</button>
+                <div class="hero-img" onclick="navigateTo('game',${g.id})">${im(g, 'hero')}<div class="hero-title">${esc(g.title)}</div></div>
                 <button class="arrow r" onclick="heroGo(1)" aria-label="Siguiente">›</button>
-                <div class="hero-side"><h3 class="text-white text-2xl font-semibold leading-tight">${g.title}</h3>
+                <div class="hero-side"><h3 class="text-white text-2xl font-semibold leading-tight">${esc(g.title)}</h3>
                 <div class="text-sm"><span class="rv">${g.rating}</span> <span class="text-steam-textMuted">(${g.reviewsCount} reseñas)</span></div>
-                <div class="shots">${sh.map(u => `<img src="${u}" data-fb="${g.heroImage}" alt="${g.title}" onerror="imgFail(this)">`).join('')}</div>
+                <div class="shots">${sh.map(u => `<img src="${u}" data-fb="${g.heroImage}" alt="${esc(g.title)}" onerror="imgFail(this)">`).join('')}</div>
                 <div class="mt-auto"><div class="text-xs text-white mb-2"><b class="text-steam-greenLight">Recomendado</b> porque jugaste a títulos con las etiquetas</div>
-                <div class="flex flex-wrap gap-1 mb-3">${g.tags.slice(0, 3).map(t => `<span class="chip">${t}</span>`).join('')}</div>
-                <div class="flex items-center justify-between gap-2">${prH(g)}${cartBtn(g)}</div></div></div></div>`;
+                <div class="flex flex-wrap gap-1 mb-3">${g.tags.slice(0, 3).map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
+                <div class="flex items-center justify-between gap-2">${prH(g)}${cartBtn(g)}</div></div></div></div></div>`;
         }
         function heroDots() { return FEAT.map((_, i) => `<button class="${i === state.fi ? 'on' : ''}" onclick="state.fi=${i};updateHero()" aria-label="Destacado ${i + 1}"></button>`).join(''); }
         function updateHero() {
@@ -865,11 +897,11 @@
                     <span class="text-steam-textMuted font-normal normal-case tracking-normal">${list.length} resultados</span></h2>${toolbar()}${list.map(row).join('') || '<div class="text-center py-16 text-gray-400 bg-black/20 rounded"><div class="text-4xl mb-2">🔍</div>No se encontraron juegos con esos filtros.<br><button class="btn2 mt-3" onclick="resetFilters()">Quitar filtros</button></div>'}`;
                 return;
             }
-            const deals = GAMES_DATA.filter(g => g.discount > 0).sort((a, b) => b.discount - a.discount).slice(0, 14);
+            const deals = GAMES_DATA.filter(g => dsc(g) > 0).sort((a, b) => dsc(b) - dsc(a)).slice(0, 14);
             const free = GAMES_DATA.filter(g => fin(g) === 0);
             const top = GAMES_DATA.filter(g => POS[g.rating] >= 97).slice(0, 8);
-            el.innerHTML = `<div class="grid lg:grid-cols-[200px_minmax(0,1fr)] gap-5">${sideNav()}<div class="min-w-0">${eventBanner()}<h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
-                <div id="hero-box">${heroHTML()}</div><div class="dots" id="hero-dots">${heroDots()}</div>
+            el.innerHTML = `${eventHero()}<div class="hc"><h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
+                </div><div id="hero-box">${heroHTML()}</div><div class="hc"><div class="dots" id="hero-dots">${heroDots()}</div>${eventStrip()}
                 ${dealOfDay()}<h2 class="sec-t">Ofertas especiales <button onclick="filterCategory('Ofertas')">Ver todas las ofertas ›</button></h2>
                 <div class="strip">${deals.map(cap).join('')}</div>
                 <h2 class="sec-t">Explorar por categoría</h2>
@@ -880,7 +912,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">${top.map(row).join('')}</div>
                 ${GAMES_DATA.some(g => g.ext || g.dl) ? `<h2 class="sec-t">Hechos por la comunidad</h2><div class="strip">${GAMES_DATA.filter(g => g.ext || g.dl || g.id === VR_ID).map(cap).join('')}</div>` : ''}
                 <h2 class="sec-t">Todos los juegos (${GAMES_DATA.length})</h2>
-                <div class="cgrid">${GAMES_DATA.map(cap).join('')}</div></div></div>`;
+                <div class="cgrid">${GAMES_DATA.map(cap).join('')}</div></div>`;
         }
 
         // RENDER 2: PÁGINA DE PRODUCTO
@@ -953,6 +985,9 @@
             else if (state.view === 'community') renderCommunityView();
             else if (state.view === 'profile') renderProfileView();
             else if (state.view === 'history') renderHistoryView();
+            else if (state.view === 'downloads') renderDownloadsView();
+            else if (state.view === 'about') renderAboutView();
+            else if (state.view === 'profile-edit') renderProfileEdit();
         }
 
         // INITIALIZATION ON LOAD
@@ -1247,7 +1282,7 @@
                 if (!sv) await SB.from('saves').insert({ id: user.id, data: {} });
                 ME.name = p.username; applyCloud((sv && sv.data) || {});
                 document.getElementById('auth').style.display = 'none';
-                const h = document.getElementById('hdr-user'); h.textContent = ME.name; h.previousElementSibling.textContent = ME.name[0].toUpperCase();
+                const h = document.getElementById('hdr-user'); h.textContent = ME.name; applyHeaderAvatar(); loadMyCustom();
                 state.view = 'store'; boot(); heartbeat(); cloudSave();
             } catch (e) { authMsg('Error al entrar: ' + e.message); }
         }
@@ -1303,7 +1338,8 @@
         }
         // ===== v21: perfiles, reseñas, ranking semanal, eventos, historial y cupones =====
         const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        const EVENTS = [{ n: 'Semana de la Comunidad', from: '2026-10-26', to: '2026-11-02', games: [9000001, 9100001, 9100002], d: 'Los juegos hechos por la comunidad, destacados toda la semana.' }];   // edita fechas y juegos aquí
+        const EVENTS = [{ k: 'miedo', n: 'FESTIVAL DEL', n1: 'MIEDO', n2: 'DE LA COMUNIDAD', from: '2026-10-26', to: '2026-11-02', toEs: '2 DE NOVIEMBRE', games: [9000001, 9100001, 9100002], tags: ['Terror', 'Zombis'], extra: 25, d: 'Descuentos, demos y más' }];   // edita fechas, juegos y descuento aquí
+        const evNow = () => EVENTS.find(e => Date.now() >= new Date(e.from + 'T00:00:00') && Date.now() <= new Date(e.to + 'T23:59:59'));
         function eventBanner() {
             const now = Date.now(), e = EVENTS.find(x => now < new Date(x.to + 'T23:59:59')); if (!e) return '';
             const st = new Date(e.from + 'T00:00:00'), live = now >= st, ms = (live ? new Date(e.to + 'T23:59:59') : st) - now, d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5);
@@ -1439,6 +1475,102 @@
                 <p class="text-sm text-gray-300 leading-relaxed">${esc(sel.description)}</p></div></div>`;
             if (refocus) { const i = document.getElementById('lib-q'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
         }
+
+        // ===== v23: marco de cliente (url, atrás/adelante, descargas, acerca de) =====
+        function urlFor() {
+            const v = state.view, g = byId(state.selectedGameId);
+            if (v === 'game' && g) return 'https://store.steampowered.com/app/' + g.id + '/' + g.title.replace(/\W+/g, '_') + '/';
+            return { store: 'https://store.steampowered.com/', library: 'steam://nav/games', community: 'https://steamcommunity.com/', loot: 'steam://nav/botin', history: 'steam://nav/purchases', downloads: 'steam://nav/downloads',
+                profile: 'https://steamcommunity.com/profiles/' + (state.profileId || ''), 'profile-edit': 'https://steamcommunity.com/my/edit/info', about: 'steam://about' }[v] || '';
+        }
+        updateHeaderState = function () {
+            animWallet();
+            const cb = document.getElementById('cart-count-badge'); if (state.cart.length) { cb.textContent = state.cart.length; cb.classList.remove('hidden'); } else cb.classList.add('hidden');
+            const wc = document.getElementById('wish-count'); if (wc) wc.textContent = state.wishlist.length;
+            const v = state.view, mine = ME && state.profileId === ME.id;
+            const tab = (v === 'store' || v === 'game') ? 'store' : v === 'library' ? 'library' : v === 'loot' ? 'loot' : (v === 'profile-edit' || (v === 'profile' && mine)) ? 'me' : ['community', 'history', 'downloads', 'profile'].includes(v) ? 'community' : '';
+            [['store', 'nav-store'], ['library', 'nav-library'], ['community', 'nav-com'], ['loot', 'nav-loot'], ['me', 'nav-me']].forEach(([k, id]) => { const e = document.getElementById(id); if (e) e.classList.toggle('on', k === tab); });
+            document.getElementById('loot-dot').classList.toggle('hidden', !(canDaily() || state.meta.free > 0)); document.getElementById('com-dot').classList.toggle('hidden', !state.pendIn);
+            const bn = document.getElementById('bell-n'); if (bn) { bn.textContent = state.pendIn || ''; bn.classList.toggle('hidden', !state.pendIn); }
+            document.getElementById('nav-back').disabled = NH.i <= 0; document.getElementById('nav-fwd').disabled = NH.i >= NH.h.length - 1;
+            document.getElementById('url-line').textContent = urlFor();
+            const sb = document.querySelector('.sub'); if (sb) sb.style.display = (v === 'store' || v === 'game') ? '' : 'none';
+        };
+        function renderDownloadsView() {
+            const own = GAMES_DATA.filter(g => state.library.includes(g.id)), dl = own.filter(g => g.dl), web = own.filter(g => !g.dl);
+            const line = (g, b) => `<div class="fr"><img src="${g.heroImage}" width="92" style="border-radius:2px;aspect-ratio:460/215;object-fit:cover" onerror="imgFail(this)" alt=""><div class="flex-1 min-w-0"><div class="text-white font-bold truncate">${esc(g.title)}</div><div class="text-xs text-steam-textMuted">${g.dl ? esc(g.os) + ' · ' + esc(g.size || '') : 'Se juega en el navegador'}</div></div>${b}</div>`;
+            document.getElementById('app-container').innerHTML = `<h2 class="text-2xl text-white font-bold mb-4">Administrar descargas</h2>
+                <div class="lt mb-4"><h2 class="lt-h">⬇ Para descargar <span>${dl.length}</span></h2>${dl.map(g => line(g, `<button class="bgreen" onclick="playGame(${g.id})">Descargar</button>`)).join('') || '<div class="text-sm text-steam-textMuted">No tienes juegos descargables en tu biblioteca.</div>'}</div>
+                <div class="lt"><h2 class="lt-h">✔ Listos para jugar <span>${web.length}</span></h2>${web.map(g => line(g, `<button class="btn2" onclick="playGame(${g.id})">▶ Jugar</button>`)).join('') || '<div class="text-sm text-steam-textMuted">Aún no tienes juegos.</div>'}</div>`;
+        }
+        function renderAboutView() {
+            document.getElementById('app-container').innerHTML = `<div class="lt" style="max-width:820px;margin:0 auto"><h2 class="text-2xl text-white font-bold mb-2">Acerca de este simulador</h2>
+                <p class="text-sm text-gray-300 mb-3">Proyecto escolar que imita la interfaz del cliente de Steam. Las cuentas, la biblioteca, los amigos, las reseñas, los perfiles y el ranking son reales (guardados en la nube); el dinero, los precios y las compras son ficticios.</p>
+                <p class="text-sm text-gray-300 mb-3"><b class="text-white">Tecnologías:</b> HTML, CSS (Tailwind), JavaScript puro, Canvas 2D, Web Audio y Supabase (autenticación, base de datos y almacenamiento privado), publicado con GitHub Pages.</p>
+                <p class="text-sm text-gray-300 mb-3"><b class="text-white">Juegos propios:</b> VOID RUNNER (campaña de 20 niveles) y CLICK RUSH. TÁCTICO 4v4 es de un compañero.</p>
+                <p class="text-xs text-steam-textMuted">«Steam» es marca de Valve. Proyecto académico sin fines comerciales ni afiliación. Se usaron asistentes de IA (Claude y Gemini) para generar y revisar partes del código.</p></div>`;
+        }
+        function applyHeaderAvatar() {
+            const a = document.getElementById('hdr-av'), n = document.getElementById('hdr-name2'); if (!ME) return;
+            if (a) a.innerHTML = avatarHTML(ME.custom, ME.name, 24, false); if (n) n.textContent = (ME.custom && ME.custom.dn) || ME.name;
+        }
+        async function loadMyCustom() {
+            try { const r = await SB.from('profiles').select('custom').eq('id', ME.id).maybeSingle(); if (r && r.data) { ME.custom = r.data.custom || {}; applyHeaderAvatar(); } } catch (e) {}
+        }
+
+        // ===== v23: banner de evento, juegos nuevos, portadas verticales =====
+        function eventHero() {
+            const now = Date.now(), e = EVENTS.find(x => now < new Date(x.to + 'T23:59:59')); if (!e) return '';
+            const st = new Date(e.from + 'T00:00:00'), live = now >= st, ms = (live ? new Date(e.to + 'T23:59:59') : st) - now, d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5);
+            const bat = (x, y, k, r) => `<use href="#evbat" transform="translate(${x} ${y}) rotate(${r}) scale(${k})"/>`;
+            const stars = Array.from({ length: 36 }, (_, i) => `<circle cx="${(i * 197 + 60) % 1900}" cy="${(i * 83 + 20) % 230}" r="${i % 3 ? 1.4 : 2.2}" fill="#fff" opacity="${.35 + (i % 4) * .15}"/>`).join('');
+            return `<div class="evh"><svg class="evsvg" viewBox="0 0 1920 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs>
+                <linearGradient id="evsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050b24"/><stop offset=".55" stop-color="#0a2f73"/><stop offset="1" stop-color="#0b4a9c"/></linearGradient>
+                <radialGradient id="evmoon" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e6f3ff"/><stop offset=".55" stop-color="#9cc8ff" stop-opacity=".45"/><stop offset="1" stop-color="#9cc8ff" stop-opacity="0"/></radialGradient>
+                <linearGradient id="evfog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd6ff" stop-opacity="0"/><stop offset="1" stop-color="#8fe3ff" stop-opacity=".4"/></linearGradient>
+                <pattern id="evfence" width="44" height="130" patternUnits="userSpaceOnUse"><path d="M9 130V34L22 10L35 34V130Z" fill="#050d1d"/></pattern>
+                <path id="evbat" d="M0 0C-10-14-30-18-44-4C-34-8-26-4-22 6C-16 0-8 2 0 12C8 2 16 0 22 6C26-4 34-8 44-4C30-18 10-14 0 0Z" fill="#06101f"/>
+                <g id="evtree" fill="none" stroke="#050d1d" stroke-linecap="round"><path stroke-width="34" d="M120 470C150 370 90 300 140 220C165 170 140 110 190 40"/><path stroke-width="16" d="M140 230C90 200 70 170 20 160"/><path stroke-width="14" d="M150 190C210 170 240 130 300 126"/><path stroke-width="12" d="M170 120C130 90 126 60 90 40"/><path stroke-width="12" d="M135 300C190 280 230 290 270 250"/></g></defs>
+                <rect width="1920" height="460" fill="url(#evsky)"/>${stars}
+                <circle cx="1480" cy="118" r="170" fill="url(#evmoon)"/><circle cx="1480" cy="118" r="66" fill="#eaf5ff"/><circle cx="1458" cy="102" r="12" fill="#cfe3f7"/><circle cx="1502" cy="140" r="17" fill="#cfe3f7"/><circle cx="1492" cy="90" r="7" fill="#cfe3f7"/>
+                <use href="#evtree"/><use href="#evtree" transform="translate(1920 0) scale(-1 1)"/>
+                <g fill="#06101f"><path d="M330 400V300L370 268V230L400 196L430 230V268L470 300V400Z"/><path d="M1380 400V320L1410 292V250L1440 214L1470 250V292L1500 320V400Z"/></g>
+                <g fill="#ffd96b"><rect x="392" y="300" width="16" height="22"/><rect x="430" y="330" width="14" height="20"/><rect x="1432" y="320" width="16" height="22"/></g>
+                <path d="M300 340C300 262 340 232 382 232C424 232 464 262 464 340L464 392L436 370L410 396L382 370L354 396L328 370L300 392Z" fill="#8bffc1" opacity=".93" transform="translate(-120 -40) rotate(-6 380 300)"/>
+                <ellipse cx="228" cy="250" rx="11" ry="16" fill="#06240f"/><ellipse cx="270" cy="252" rx="11" ry="16" fill="#06240f"/><path d="M230 290Q250 306 272 290" stroke="#06240f" stroke-width="5" fill="none"/>
+                ${bat(560, 90, 1.1, -8)}${bat(760, 60, .8, 10)}${bat(1130, 80, 1, -12)}${bat(1280, 150, .7, 8)}${bat(1700, 70, 1, 6)}${bat(1850, 190, .8, -10)}${bat(180, 120, .9, 12)}
+                <rect y="342" width="1920" height="130" fill="url(#evfence)"/><rect y="440" width="1920" height="30" fill="#040a17"/><rect y="250" width="1920" height="220" fill="url(#evfog)"/>
+                <g><ellipse cx="1640" cy="408" rx="48" ry="38" fill="#f97316"/><ellipse cx="1640" cy="408" rx="20" ry="36" fill="#ea580c"/><path d="M1618 400l10-12 8 12zM1650 400l10-12 8 12z" fill="#2b0f02"/><path d="M1620 422q20 14 40 0" stroke="#2b0f02" stroke-width="5" fill="none"/></g></svg>
+                <div class="evh-c"><div class="evh-1">${esc(e.n)}</div><div class="evh-2">${esc(e.n1)}</div><div class="evh-3">${esc(e.n2)}</div><div class="evh-4">${esc(e.d.toUpperCase())}</div>
+                <div class="evh-5">${live ? 'DESDE AHORA HASTA EL ' + esc(e.toEs) + ' · TERMINA EN ' + d + ' D ' + h + ' H' : 'EMPIEZA EN ' + d + ' D ' + h + ' H'}</div></div></div>`;
+        }
+        function eventStrip() {
+            const e = evNow(); if (!e) return '';
+            const list = GAMES_DATA.filter(CATF.Evento);
+            return `<h2 class="sec-t" style="color:#9dff6a">🎃 ${esc(e.n)} ${esc(e.n1)}: ofertas del evento <button onclick="filterCategory('Evento')">Ver todo ›</button></h2><div class="strip">${list.map(cap).join('')}</div>`;
+        }
+        const wrapT = t => { const w = String(t).toUpperCase().split(' '), L = []; let c = ''; w.forEach(x => { if ((c + ' ' + x).trim().length > 10 && c) { L.push(c); c = x; } else c = (c + ' ' + x).trim(); }); if (c) L.push(c); return L; };
+        const mkPortrait = (t, h) => { const L = wrapT(t), y0 = 225 - (L.length - 1) * 22; return 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},60%,16%)"/><stop offset="1" stop-color="hsl(${h + 60},60%,38%)"/></linearGradient></defs><rect width="300" height="450" fill="url(#g)"/>${L.map((l, i) => `<text x="150" y="${y0 + i * 44}" fill="#fff" font-family="Arial Black,Arial" font-size="${l.length > 8 ? 30 : 38}" font-weight="900" text-anchor="middle">${l.replace(/[<&]/g, '')}</text>`).join('')}</svg>`); };
+        [[381210, "Dead by Daylight", 19.99, 0, "Acción,Multijugador,Supervivencia", "Terror,Multijugador,Asimétrico,Supervivencia", "Muy positivas", 650, "14 JUN 2016", "Behaviour Interactive", "Un asesino contra cuatro supervivientes: escapa, escóndete y huye de la Entidad."],
+         [739630, "Phasmophobia", 13.99, 0, "Cooperativo,Indie,Multijugador", "Terror,Cooperativo,Fantasmas,Realidad virtual", "Muy positivas", 600, "18 SEP 2020", "Kinetic Games", "Investiga lugares encantados con tu equipo y reúne pruebas de actividad paranormal."],
+         [2050650, "Resident Evil 4", 39.99, 50, "Acción,Aventura", "Terror,Zombis,Acción,Supervivencia", "Muy positivas", 120, "23 MAR 2023", "CAPCOM", "Leon S. Kennedy rescata a la hija del presidente en un pueblo europeo infestado."],
+         [883710, "Resident Evil 2", 39.99, 60, "Acción,Aventura", "Terror,Zombis,Supervivencia terrorífica,Clásico", "Muy positivas", 90, "25 ENE 2019", "CAPCOM", "Leon y Claire escapan de Raccoon City en este remake del clásico del terror."],
+         [238320, "Outlast", 19.99, 75, "Aventura,Indie", "Terror,Supervivencia terrorífica,Primera persona,Atmosférico", "Muy positivas", 80, "4 SEP 2013", "Red Barrels", "Eres periodista y entras a un manicomio: no puedes pelear, solo huir y esconderte."],
+         [214490, "Alien: Isolation", 39.99, 80, "Aventura,Supervivencia", "Terror,Ciencia ficción,Sigilo,Atmosférico", "Muy positivas", 100, "7 OCT 2014", "Creative Assembly|SEGA", "Sobrevive a un organismo perfecto en una estación espacial en ruinas."],
+         [242760, "The Forest", 19.99, 50, "Supervivencia,Aventura,Cooperativo", "Terror,Supervivencia,Mundo abierto,Crafteo", "Muy positivas", 300, "30 ABR 2018", "Endnight Games", "Sobrevive en un bosque habitado por caníbales después de un accidente aéreo."],
+         [239140, "Dying Light", 19.99, 70, "Acción,Mundo Abierto,Cooperativo", "Zombis,Parkour,Mundo abierto,Cooperativo", "Muy positivas", 230, "26 ENE 2015", "Techland", "Corre, salta y lucha en una ciudad infestada de zombis; de noche todo empeora."],
+         [108600, "Project Zomboid", 14.99, 0, "Supervivencia,Simulación,Multijugador", "Zombis,Supervivencia,Mundo abierto,Crafteo", "Muy positivas", 230, "8 NOV 2013", "The Indie Stone", "Sobrevive al apocalipsis zombi con un sistema de supervivencia muy profundo."],
+         [945360, "Among Us", 4.99, 0, "Multijugador,Indie", "Social,Multijugador,Deducción,Fiesta", "Muy positivas", 540, "15 NOV 2018", "Innersloth", "Encuentra a los impostores de la tripulación antes de que sabotee la nave."],
+         [236390, "War Thunder", 0, 0, "Acción,Multijugador,Simulación", "Aviones,Tanques,Multijugador,Militar", "Mayormente positivas", 340, "15 AGO 2013", "Gaijin Entertainment", "Combates masivos en tierra, aire y mar con cientos de vehículos históricos."],
+         [4000, "Garry's Mod", 9.99, 0, "Indie,Simulación,Multijugador", "Sandbox,Creatividad,Multijugador,Mods", "Extremadamente positivas", 1000, "29 NOV 2006", "Facepunch Studios", "Un sandbox sin objetivos: construye, experimenta y juega los modos de la comunidad."],
+         [322170, "Geometry Dash", 4.99, 0, "Indie,Acción", "Plataformas,Ritmo,Difícil,Indie", "Extremadamente positivas", 420, "22 DIC 2014", "RobTop Games", "Salta y vuela al ritmo de la música esquivando obstáculos."]
+        ].forEach(([id, title, price, discount, cats, tags, rating, rev, date, dev, description]) => {
+            const [developer, publisher] = dev.split('|');
+            GAMES_DATA.push({ id, title, price, originalPrice: price, discount, categories: cats.split(','), rating, reviewsCount: rev >= 1000 ? (rev / 1000).toFixed(1) + ' M' : rev + ' mil', releaseDate: date,
+                developer, publisher: publisher || developer, description, tags: tags.split(','), heroImage: A + id + '/header.jpg', screenshots: [] });
+        });
+        FEAT.push(381210, 2050650); CATS.push('Terror');
+        GAMES_DATA.forEach(g => { if (g.id === VR_ID) g.portrait = mkPortrait('VOID RUNNER', 265); else if (g.ext || g.dl) g.portrait = mkPortrait(g.title, (g.id * 37) % 360); });
 
         window.onload = initAuth;
 
