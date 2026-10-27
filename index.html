@@ -148,6 +148,11 @@
         #ext iframe{width:100vw;height:calc(100vh - 44px);border:0;display:block;background:#000;flex:none}
         #ext-m{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#c6d4df;font-size:13px;padding:5px 14px;border-radius:4px;pointer-events:none;z-index:2;max-width:92vw;text-align:center}
         #ext-m:empty{display:none}
+
+        .side-b{background:linear-gradient(#1b2838cc,#0f1a26cc);border-radius:3px;padding:10px;margin-bottom:12px}
+        .side-b h4{font-size:11px;letter-spacing:.1em;color:#8f98a0;margin:0 0 6px;font-weight:700}
+        .side-i{display:flex;justify-content:space-between;width:100%;padding:6px 8px;font-size:13px;color:#c7d5e0;text-align:left;border-radius:2px}
+        .side-i:hover{background:#ffffff14;color:#fff}.side-i span{color:#6b7f8f;font-size:11px}
     </style>
 </head>
 <body class="h-full steam-gradient-bg min-h-screen flex flex-col antialiased">
@@ -265,7 +270,7 @@
         <div class="max-w-[1380px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-brands fa-steam text-3xl opacity-50"></i>
-                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 21</p>
+                <p>© 2026 Valve Corporation. Simulador interactivo desarrollado para pruebas de interfaz. · versión 22</p>
             </div>
             <div class="flex space-x-4">
                 <span class="hover:underline cursor-pointer">Política de Privacidad</span>
@@ -662,6 +667,8 @@
 
         // CART MANAGEMENT
         function addToCart(gameId) {
+            const gg = GAMES_DATA.find(x => x.id === gameId);
+            if (gg && gg.needKey && !hasKey() && !state.library.includes(gameId)) { showToast('🔒 Necesitas la llave', 'Consíguela jugando VOID RUNNER o cómprala por $200.'); return; }
             if (state.library.includes(gameId)) {
                 showToast('Ya en biblioteca', 'Ya posees este título en tu cuenta.');
                 return;
@@ -795,7 +802,7 @@
             if (f === 0) return '<div class="pr free"><div class="p">Gratis</div></div>';
             return `<div class="pr">${d ? `<div class="d" ${d !== g.discount ? 'style="background:#c2410c;color:#fff"' : ''}>-${d}%</div>` : ''}<div class="p">${d ? `<s>$${g.price.toFixed(2)}</s>` : ''}$${f.toFixed(2)}</div></div>`;
         };
-        const cartBtn = g => state.library.includes(g.id) ? `<button class="btn2" onclick="event.stopPropagation();navigateTo('library')">Ir a biblioteca</button>`
+        const cartBtn = g => (g.needKey && !hasKey() && !state.library.includes(g.id)) ? `<button class="btn2" onclick="event.stopPropagation();navigateTo('game',${g.id})">🔒 Requiere llave</button>` : state.library.includes(g.id) ? `<button class="btn2" onclick="event.stopPropagation();navigateTo('library')">Ir a biblioteca</button>`
             : state.cart.includes(g.id) ? `<button class="btn2" onclick="event.stopPropagation();toggleCartModal(true)">En el carro ✓</button>`
             : `<button class="bgreen" onclick="event.stopPropagation();addToCart(${g.id})">Añadir al carro</button>`;
         const cap = g => `<div class="cap" onclick="navigateTo('game',${g.id})"><div class="relative">${im(g)}</div><div class="b">
@@ -851,20 +858,19 @@
         // RENDER 1: PORTADA DE LA TIENDA
         function renderStoreView() {
             const q = state.searchQuery, cat = state.selectedCategory, home = !q && cat === 'all';
-            const list = GAMES_DATA.filter(g => (g.title.toLowerCase().includes(q) || g.tags.some(t => t.toLowerCase().includes(q))) && matchCat(g, cat));
+            const list = GAMES_DATA.filter(g => (g.title.toLowerCase().includes(q) || g.tags.some(t => t.toLowerCase().includes(q))) && matchCat(g, cat)).filter(passF).sort(sortFn);
             const el = document.getElementById('app-container');
             if (!home) {
                 el.innerHTML = `<h2 class="sec-t" style="margin-top:0">${q ? 'Resultados para «' + q + '»' : cat === 'Wishlist' ? 'Tu lista de deseados' : cat.startsWith('dev:') ? 'Desarrollador: ' + cat.slice(4) : CATF[cat] ? cat : 'Categoría: ' + cat}
-                    <span class="text-steam-textMuted font-normal normal-case tracking-normal">${list.length} resultados</span></h2>
-                    ${list.map(row).join('') || '<div class="text-center py-16 text-gray-400 bg-black/20 rounded">No se encontraron juegos.</div>'}`;
+                    <span class="text-steam-textMuted font-normal normal-case tracking-normal">${list.length} resultados</span></h2>${toolbar()}${list.map(row).join('') || '<div class="text-center py-16 text-gray-400 bg-black/20 rounded"><div class="text-4xl mb-2">🔍</div>No se encontraron juegos con esos filtros.<br><button class="btn2 mt-3" onclick="resetFilters()">Quitar filtros</button></div>'}`;
                 return;
             }
             const deals = GAMES_DATA.filter(g => g.discount > 0).sort((a, b) => b.discount - a.discount).slice(0, 14);
             const free = GAMES_DATA.filter(g => fin(g) === 0);
             const top = GAMES_DATA.filter(g => POS[g.rating] >= 97).slice(0, 8);
-            el.innerHTML = `${eventBanner()}<h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
+            el.innerHTML = `<div class="grid lg:grid-cols-[200px_minmax(0,1fr)] gap-5">${sideNav()}<div class="min-w-0">${eventBanner()}<h2 class="sec-t" style="margin-top:0">Destacados y recomendados <button onclick="showToast('Tarjetas de regalo','Función simulada')"><i class="fa-solid fa-gift"></i> Enviar una tarjeta de regalo</button></h2>
                 <div id="hero-box">${heroHTML()}</div><div class="dots" id="hero-dots">${heroDots()}</div>
-                <h2 class="sec-t">Ofertas especiales <button onclick="filterCategory('Ofertas')">Ver todas las ofertas ›</button></h2>
+                ${dealOfDay()}<h2 class="sec-t">Ofertas especiales <button onclick="filterCategory('Ofertas')">Ver todas las ofertas ›</button></h2>
                 <div class="strip">${deals.map(cap).join('')}</div>
                 <h2 class="sec-t">Explorar por categoría</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">${CATS.slice(0, 6).concat(['Indie', 'Simulación', 'Aventura']).map((c, i) => `<button class="gtile" style="--h:${i * 38 + 200}" onclick="filterCategory('${c}')">${c}<small>${GAMES_DATA.filter(g => matchCat(g, c)).length} juegos</small></button>`).join('')}</div>
@@ -874,7 +880,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">${top.map(row).join('')}</div>
                 ${GAMES_DATA.some(g => g.ext || g.dl) ? `<h2 class="sec-t">Hechos por la comunidad</h2><div class="strip">${GAMES_DATA.filter(g => g.ext || g.dl || g.id === VR_ID).map(cap).join('')}</div>` : ''}
                 <h2 class="sec-t">Todos los juegos (${GAMES_DATA.length})</h2>
-                <div class="cgrid">${GAMES_DATA.map(cap).join('')}</div>`;
+                <div class="cgrid">${GAMES_DATA.map(cap).join('')}</div></div></div>`;
         }
 
         // RENDER 2: PÁGINA DE PRODUCTO
@@ -893,7 +899,7 @@
                         <img id="main-product-img" src="${media[0]}" data-fb="${g.heroImage}" data-hdr="${g.heroImage}" alt="${g.title}" onerror="imgFail(this)">
                         <button class="arrow r" onclick="shotNav(1)" aria-label="Siguiente">›</button></div>
                         <div class="tstrip" id="tstrip">${media.map((u, i) => `<button class="${i ? '' : 'on'}" data-src="${u}" onclick="setShot(this)"><img src="${u}" alt="" onerror="this.parentElement.remove()"></button>`).join('')}</div></div>
-                    <div class="buyb"><h3>${fin(g) === 0 ? 'Jugar' : 'Comprar'} ${g.title}</h3>
+                    ${keyPanel(g)}<div class="buyb"><h3>${fin(g) === 0 ? 'Jugar' : 'Comprar'} ${g.title}</h3>
                         <div class="buyr">${g.discount ? '<span class="oferta">¡Oferta de otoño! Termina el 26 de octubre</span>' : ''}${prH(g)}${cartBtn(g)}</div>
                         <button class="btn2 mt-3" onclick="toggleWish(${g.id})"><i class="fa-${wl ? 'solid' : 'regular'} fa-star"></i> ${wl ? 'En tu lista de deseados' : 'Añadir a tu lista de deseados'}</button></div>
                     <h2 class="h-sec">Acerca de este juego</h2>
@@ -910,7 +916,7 @@
                     <div class="bar mb-1"><i style="width:${pos}%"></i></div><div class="text-[11px] text-steam-textMuted mb-3">${pos}% positivas · ${g.reviewsCount} reseñas</div>
                     <div class="kv"><span>LANZAMIENTO:</span><span>${g.releaseDate}</span></div>
                     <div class="kv"><span>DESARROLLADOR:</span><span class="rv"><button class="hover:underline" data-c="dev:${g.developer}" onclick="filterCategory(this.dataset.c)">${g.developer}</button></span></div>
-                    <div class="kv"><span>EDITOR:</span><span class="rv">${g.publisher}</span></div>
+                    <div class="kv"><span>EDITOR:</span><span class="rv">${g.publisher}</span></div><div class="kv"><span>PLATAFORMAS:</span><span>${g.dl ? '🖥 ' + g.os : g.ext ? '🌐 Navegador' : '🖥 Windows'}</span></div><div class="flex flex-wrap gap-1.5 mt-2">${[g.categories.includes('Multijugador') && '👥 Multijugador', g.categories.includes('Cooperativo') && '🤝 Cooperativo', !g.categories.includes('Multijugador') && !g.categories.includes('Cooperativo') && '👤 Un jugador', fin(g) === 0 && '🆓 Gratis para jugar', g.ext && '🏆 Ranking', g.dl && '⬇ Descarga'].filter(Boolean).map(f => `<span class="chip" style="font-size:11px;padding:3px 8px">${f}</span>`).join('')}</div>
                     <div class="text-[11px] text-steam-textMuted mt-4 mb-1">Etiquetas populares para este producto:</div>
                     <div class="flex flex-wrap gap-1">${g.tags.map(t => `<button class="chip" style="font-size:11px;padding:3px 8px" onclick="state.searchQuery='${t.toLowerCase().replace(/'/g, '')}';navigateTo('store')">${t}</button>`).join('')}</div>
                     ${g.dl ? `<div class="mt-4 text-xs bg-black/30 border border-white/10 rounded p-3 text-gray-300"><b class="text-white"><i class="fa-solid fa-download"></i> Juego para ${g.os}${g.dlPath ? ' · 🔒 descarga exclusiva de esta tienda' : ''}</b><br>Se descarga y se juega en tu PC (${g.size}). ${g.note || ''}</div>` : ''}${(g.ext || g.id === VR_ID) ? '<div id="lb" class="mt-4 text-xs text-steam-textMuted">Cargando ranking…</div>' : ''}${own ? `<button class="bgreen w-full mt-4" onclick="playGame(${g.id})">${g.dl ? '<i class="fa-solid fa-download"></i> Descargar para ' + g.os : '<i class="fa-solid fa-play"></i> Jugar'}</button>` : ''}</aside></div>
@@ -936,49 +942,7 @@
         }
 
         // RENDER 3: USER LIBRARY VIEW
-        function renderLibraryView() {
-            const container = document.getElementById('app-container');
-            const ownedGames = GAMES_DATA.filter(g => state.library.includes(g.id));
-
-            container.innerHTML = `
-                <div class="mb-6 border-b border-white/10 pb-4">
-                    <h1 class="text-2xl font-black text-white flex items-center space-x-3">
-                        <i class="fa-solid fa-layer-group text-steam-blue"></i>
-                        <span>Tu Biblioteca de Juegos (${ownedGames.length})</span>
-                    </h1>
-                </div>
-
-                ${ownedGames.length === 0 ? `
-                    <div class="text-center py-16 bg-[#0f1922] rounded border border-white/5">
-                        <i class="fa-solid fa-ghost text-5xl text-gray-600 mb-3"></i>
-                        <p class="text-gray-400">Aún no tienes ningún juego en tu biblioteca.</p>
-                        <button onclick="navigateTo('store')" class="mt-4 bg-steam-blue text-black font-bold px-4 py-2 rounded text-xs">Ir a la Tienda</button>
-                    </div>
-                ` : `
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${ownedGames.map(game => `
-                            <div class="bg-[#0f1922] border border-white/10 rounded overflow-hidden flex flex-col justify-between shadow-xl">
-                                <div>
-                                    <img src="${game.heroImage}" onerror="imgFail(this)" class="w-full h-40 object-cover">
-                                    <div class="p-4">
-                                        <h3 class="font-bold text-white text-lg mb-1">${game.title}</h3>
-                                        <span class="text-xs text-green-400 block mb-3"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Listo para jugar</span>
-                                        <p class="text-xs text-gray-400 line-clamp-2">${game.description}</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 pt-0">
-                                    <button onclick="playGame(${game.id})" class="w-full bg-steam-btnGreen hover:bg-steam-btnGreenHover text-white font-bold py-2.5 rounded text-sm transition-colors flex items-center justify-center space-x-2">
-                                        <i class="fa-solid ${game.dl ? 'fa-download' : 'fa-play'}"></i>
-                                        <span>${game.dl ? 'Descargar' : 'Jugar'}</span>
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `}
-            `;
-        }
-
+        
         // MAIN ROUTER RENDERER
         function render() {
             updateHeaderState();
@@ -1183,23 +1147,24 @@
         const EXT_GAMES = [
             { file: 'juegos/click-rush.html', title: 'CLICK RUSH', author: 'Comunidad', price: 0, discount: 0, hue: 150, cats: ['Acción', 'Indie', 'Arcade'],
               tags: ['Arcade', 'Reflejos', 'Puntuación', 'Original'], desc: 'Pulsa los círculos antes de que se encojan. 30 segundos, combos y un ranking para competir con tus amigos. Es el juego de ejemplo para que los demás hagan el suyo.' },
-            { dlPath: 'tactico4v4/Tactico4v4-tactico-v2_3.zip', os: 'Windows', size: '32 MB (zip)', title: 'TÁCTICO 4v4', author: 'Comunidad', price: 0, discount: 0, hue: 25, cats: ['Acción', 'FPS', 'Multijugador'],
+            { dlPath: 'tactico4v4/Tactico4v4-tactico-v2_3.zip', os: 'Windows', size: '32 MB (zip)', title: 'TÁCTICO 4v4', author: 'Comunidad', price: 300, discount: 0, needKey: 'vr', hue: 25, cats: ['Acción', 'FPS', 'Multijugador'],
               tags: ['Shooter táctico', '4v4', 'FPS', 'Multijugador', 'Competitivo', 'LAN'], note: 'Multijugador por LAN o VPN (ZeroTier/Radmin), puerto UDP 7777. Todos deben usar la misma versión (2.3). Windows puede mostrar «Windows protegió su PC»: pulsa Más información > Ejecutar de todas formas. SHA-256 del zip: <span class="break-all">586f6ba93920e4dc6bbc046ef1104cba409d8216fccf7b0fe82bb4341690ed45</span>',
               desc: 'Shooter táctico 4 contra 4 en la Kasbah Táctica: fase de compra, armas y granadas, habilidades por personaje, puertas interactivas y una spike que arrasa todo en 20 metros. Hasta 8 jugadores por partida en red local. Versión 2.3.' }
         ];
         const mkCover = (t, h) => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="460" height="215"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},60%,18%)"/><stop offset="1" stop-color="hsl(${h + 60},60%,35%)"/></linearGradient></defs><rect width="460" height="215" fill="url(#g)"/><text x="230" y="118" fill="#fff" font-family="Arial Black,Arial" font-size="${t.length > 12 ? 30 : 40}" font-weight="900" text-anchor="middle">${t.replace(/[<&]/g, '')}</text></svg>`);
         EXT_GAMES.forEach((x, i) => GAMES_DATA.push({ id: 9100001 + i, title: x.title, price: x.price, originalPrice: x.price, discount: x.discount || 0, categories: x.cats,
             rating: 'Sin reseñas', reviewsCount: '0', releaseDate: x.date || 'OCT 2026', developer: x.author, publisher: x.author, description: x.desc, tags: x.tags,
-            heroImage: x.cover || mkCover(x.title, x.hue || 200), screenshots: x.shots || [], ext: x.file, dl: x.dl || (x.dlPath ? 'privado' : undefined), dlPath: x.dlPath, os: x.os, size: x.size, note: x.note }));
+            heroImage: x.cover || mkCover(x.title, x.hue || 200), screenshots: x.shots || [], ext: x.file, dl: x.dl || (x.dlPath ? 'privado' : undefined), dlPath: x.dlPath, needKey: x.needKey, os: x.os, size: x.size, note: x.note }));
         let extCur = null, extLast = 0;
         function extOpen(g) {
-            extCur = g; $v('ext-t').textContent = g.title; $v('ext-a').textContent = 'por ' + g.developer; $v('ext-m').textContent = 'Cargando…';
+            markPlayed(g.id); extCur = g; $v('ext-t').textContent = g.title; $v('ext-a').textContent = 'por ' + g.developer; $v('ext-m').textContent = 'Cargando…';
             $v('ext-f').src = g.ext; $v('ext').classList.add('on'); extFull(true);   // se abre a pantalla completa
         }
         function extFull(auto) {
             try { const el = $v('ext'); if (document.fullscreenElement) { if (!auto) document.exitFullscreen(); } else if (el.requestFullscreen) el.requestFullscreen().catch(() => {}); } catch (e) {}
         }
         async function dlOpen(g) {
+            markPlayed(g.id);
             if (g.dlPath) {
                 if (!ME || !SB) return showToast('Inicia sesión', 'La descarga es solo para cuentas de esta tienda.');
                 if (!state.library.includes(g.id)) return showToast('Primero añádelo a tu biblioteca', 'Cómpralo en la tienda para poder descargarlo.');
@@ -1219,15 +1184,15 @@
             if (d.type === 'ready') { f.contentWindow.postMessage({ type: 'init', player: ME ? ME.name : 'Jugador', best: (state.meta.scores || {})[extCur.id] || 0, data: (state.meta.gsave || {})[extCur.id] || null }, '*'); $v('ext-m').textContent = ''; }
             if (d.type === 'save' && d.data && JSON.stringify(d.data).length < 20000) { (state.meta.gsave = state.meta.gsave || {})[extCur.id] = d.data; saveState(); }
             if (d.type === 'close') extClose();
-            if (d.type === 'end' && Number.isFinite(d.score)) extEnd(Math.max(0, Math.min(1e6, Math.floor(d.score))));
+            if (d.type === 'end' && Number.isFinite(d.score)) extEnd(Math.max(0, Math.min(1e6, Math.floor(d.score))), extCur.id === VR_ID ? Math.max(0, Math.min(25, +d.bonus || 0)) : 0);
         });
-        function extEnd(sc) {
+        function extEnd(sc, bonus) {
             const g = extCur, m = state.meta; m.scores = m.scores || {};
             const rec = sc > (m.scores[g.id] || 0); if (rec) m.scores[g.id] = sc;
-            const now = Date.now(); let rw = 0;
+            const now = Date.now(); let rw = 0; if (bonus) { state.wallet += bonus; coins(10); }
             if (now - extLast > 30000) { rw = Math.min(3, sc / 200); extLast = now; state.wallet += rw; addXP(Math.min(60, Math.floor(sc / 60) + 5)); }
             saveState(); snd(rec ? 'legend' : 'win'); if (rw > .2) coins(8);
-            $v('ext-m').innerHTML = `${rec ? '<b style="color:#ffd700">¡NUEVO RÉCORD!</b> ' : ''}${sc} pts · ${rw > 0 ? '+$' + rw.toFixed(2) + ' de saldo' : 'sin recompensa (1 premio cada 30 s)'}`;
+            $v('ext-m').innerHTML = `${rec ? '<b style="color:#ffd700">¡NUEVO RÉCORD!</b> ' : ''}${sc} pts${bonus ? ' · 🎁 primer nivel: +$' + bonus : ''} · ${rw > 0 ? '+$' + rw.toFixed(2) + ' de saldo' : 'sin recompensa (1 premio cada 30 s)'}`;
             postScore(g.id, sc);
         }
         function postScore(id, score) { if (SB && ME && score > 0) SB.from('scores').insert({ user_id: ME.id, game_id: String(id), score }).then(() => {}); }
@@ -1416,6 +1381,63 @@
             const { data, error } = await SB.rpc('redeem_coupon', { c });
             if (error || data == null) return showToast('Cupón no válido', error ? error.message : 'No existe o ya lo usaste.');
             state.wallet += data; saveState(); showToast('¡Cupón canjeado!', '+$' + data + ' de saldo'); coins(10); snd('win'); document.getElementById('cp-in').value = '';
+        }
+
+        // ===== v22: llave de VOID RUNNER, portada, biblioteca y filtros =====
+        const KEY_LEVELS = 6;
+        const vrLevels = () => ((((state.meta.gsave || {})[VR_ID] || {}).camp) || []).filter(v => v > 0).length;
+        const hasKey = () => !!(state.meta.keys && state.meta.keys.vr) || vrLevels() >= KEY_LEVELS;
+        function buyKey() {
+            if (hasKey()) return; if (state.wallet < 200) return showToast('Saldo insuficiente', 'La llave cuesta $200.');
+            state.wallet -= 200; (state.meta.keys = state.meta.keys || {}).vr = 1; saveState(); showToast('🔑 ¡Llave obtenida!', 'Ya puedes comprar TÁCTICO 4v4.'); coins(12); snd('win'); render();
+        }
+        function keyPanel(g) {
+            if (!g.needKey || state.library.includes(g.id)) return '';
+            if (hasKey()) return `<div class="lt mt-4" style="border-color:#4ade8066"><b class="text-green-400">🔑 Llave de VOID RUNNER obtenida</b><div class="text-xs text-steam-textMuted">Ya puedes comprar este juego por $${g.price.toFixed(2)}.</div></div>`;
+            const n = Math.min(KEY_LEVELS, vrLevels());
+            return `<div class="lt mt-4"><div class="flex flex-wrap justify-between gap-2 items-center"><b class="text-white">🔑 Este juego requiere la llave de VOID RUNNER</b><span class="text-xs text-steam-textMuted">Además necesitas $${g.price.toFixed(2)} de saldo (tienes $${state.wallet.toFixed(2)})</span></div>
+                <div class="text-xs mt-2">Consíguela terminando ${KEY_LEVELS} niveles de la campaña (${n}/${KEY_LEVELS}):</div><div class="bar my-2"><i style="width:${n / KEY_LEVELS * 100}%"></i></div>
+                <div class="flex flex-wrap gap-2"><button class="bgreen" onclick="navigateTo('game',${VR_ID})">Ir a VOID RUNNER</button><button class="btn2" onclick="buyKey()">Comprar la llave · $200</button></div></div>`;
+        }
+        function markPlayed(id) { const p = (state.meta.played = state.meta.played || {}), x = p[id] || { n: 0 }; x.n++; x.t = Date.now(); p[id] = x; saveState(); }
+        function sideNav() {
+            const it = (l, c, n) => `<button class="side-i" onclick="filterCategory('${c}')">${l}${n != null ? `<span>${n}</span>` : ''}</button>`;
+            return `<aside class="hidden lg:block"><div style="position:sticky;top:76px"><div class="side-b"><h4>RECOMENDADO</h4>${it('⭐ Destacados', 'Destacados')}${it('🏷 Ofertas', 'Ofertas', GAMES_DATA.filter(CATF.Ofertas).length)}${it('🆓 Gratis para jugar', 'Gratis', GAMES_DATA.filter(CATF.Gratis).length)}${it('👍 Mejor valorados', 'Mejor valorados')}${it('💲 Económicos', 'Económicos')}${it('★ Lista de deseados', 'Wishlist', state.wishlist.length)}</div>
+                <div class="side-b"><h4>CATEGORÍAS</h4>${CATS.map(c => it(c, c, GAMES_DATA.filter(g => matchCat(g, c)).length)).join('')}</div></div></aside>`;
+        }
+        function dealOfDay() {
+            const g = GAMES_DATA.filter(x => !state.library.includes(x.id) && dsc(x) > 0).sort((a, b) => dsc(b) - dsc(a))[0]; if (!g) return '';
+            return `<div class="rounded overflow-hidden flex flex-wrap items-stretch mb-6 cursor-pointer border border-green-500/30" style="background:linear-gradient(90deg,#1c3a1c,#16293b)" onclick="navigateTo('game',${g.id})"><div class="w-full sm:w-80">${im(g).replace('<img ', '<img style="width:100%;height:100%;object-fit:cover" ')}</div><div class="flex-1 p-4 flex flex-col justify-center gap-2"><div class="text-xs tracking-widest text-lime-300">OFERTA DEL DÍA</div><h3 class="text-2xl text-white font-black">${esc(g.title)}</h3><div class="text-sm text-gray-300 line-clamp-2">${esc(g.description)}</div><div class="flex items-center gap-3">${prH(g)}${cartBtn(g)}</div></div></div>`;
+        }
+        // Búsqueda: orden y filtros
+        const REL_M = { ENE: 0, FEB: 1, MAR: 2, ABR: 3, MAY: 4, JUN: 5, JUL: 6, AGO: 7, SEP: 8, OCT: 9, NOV: 10, DIC: 11 };
+        const relTs = g => { const m = String(g.releaseDate || '').match(/(\d+)?\s*([A-Z]{3})\s*(\d{4})/); return m ? new Date(+m[3], REL_M[m[2]] || 0, +m[1] || 1).getTime() : 0; };
+        const SORTS = { rel: ['Relevancia', null], 'p-asc': ['Precio: menor a mayor', (a, b) => fin(a) - fin(b)], 'p-desc': ['Precio: mayor a menor', (a, b) => fin(b) - fin(a)], rate: ['Mejor valorados', (a, b) => (POS[b.rating] || 0) - (POS[a.rating] || 0)],
+            disc: ['Mayor descuento', (a, b) => dsc(b) - dsc(a)], name: ['Nombre A-Z', (a, b) => a.title.localeCompare(b.title)], new: ['Más recientes', (a, b) => relTs(b) - relTs(a)] };
+        const sortFn = (a, b) => { const f = SORTS[state.sort || 'rel'][1]; return f ? f(a, b) : 0; };
+        const passF = g => (!state.onlyDeals || dsc(g) > 0) && (state.maxP == null || fin(g) <= state.maxP);
+        function toolbar() {
+            const chip = (l, on, js) => `<button class="chip" style="font-size:12px;padding:5px 12px;${on ? 'background:#66c0f4;color:#000' : ''}" onclick="${js}">${l}</button>`;
+            return `<div class="flex flex-wrap items-center gap-2 mb-4 bg-black/25 rounded p-3"><label class="text-xs text-steam-textMuted">Ordenar por <select class="in" style="margin:0;width:auto;padding:5px 8px" onchange="state.sort=this.value;render()">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}" ${(state.sort || 'rel') === k ? 'selected' : ''}>${v[0]}</option>`).join('')}</select></label>`
+                + chip('🏷 Solo ofertas', state.onlyDeals, 'state.onlyDeals=!state.onlyDeals;render()') + chip('🆓 Gratis', state.maxP === 0, 'state.maxP=state.maxP===0?null:0;render()') + chip('≤ $15', state.maxP === 15, 'state.maxP=state.maxP===15?null:15;render()') + chip('≤ $30', state.maxP === 30, 'state.maxP=state.maxP===30?null:30;render()') + '</div>';
+        }
+        function resetFilters() { state.sort = 'rel'; state.onlyDeals = false; state.maxP = null; state.searchQuery = ''; state.selectedCategory = 'all'; const i = document.getElementById('search-input'); if (i) i.value = ''; render(); }
+        // Biblioteca estilo cliente de Steam: lista a la izquierda, detalle a la derecha
+        function renderLibraryView(refocus) {
+            const el = document.getElementById('app-container'), own = GAMES_DATA.filter(g => state.library.includes(g.id));
+            if (!own.length) { el.innerHTML = `<div class="text-center py-16 bg-[#0f1922] rounded border border-white/5"><i class="fa-solid fa-ghost text-5xl text-gray-600 mb-3"></i><p class="text-gray-400">Aún no tienes ningún juego en tu biblioteca.</p><button onclick="navigateTo('store')" class="mt-4 bg-steam-blue text-black font-bold px-4 py-2 rounded text-xs">Ir a la Tienda</button></div>`; return; }
+            const q = (state.libQ || '').toLowerCase(), list = own.filter(g => g.title.toLowerCase().includes(q)), sel = own.find(g => g.id === state.libSel) || list[0] || own[0];
+            const pl = (state.meta.played || {})[sel.id], camp = sel.id === VR_ID ? (((state.meta.gsave || {})[VR_ID] || {}).camp || []) : null;
+            const row = g => `<button class="flex items-center gap-2 w-full text-left p-1.5 rounded ${g.id === sel.id ? 'bg-[#3d6c8d66]' : 'hover:bg-white/10'}" onclick="state.libSel=${g.id};renderLibraryView()"><img src="${g.heroImage}" class="w-14 rounded" style="aspect-ratio:460/215;object-fit:cover" onerror="imgFail(this)"><span class="min-w-0"><span class="block text-sm text-white truncate">${esc(g.title)}</span><span class="block text-[11px] ${g.dl ? 'text-sky-300' : 'text-green-400'}">${g.dl ? 'Descargable' : 'Instalado'}</span></span></button>`;
+            const box = (a, b) => `<div class="lt text-center" style="padding:10px"><div class="text-white font-bold text-sm">${b}</div><div class="text-[11px] text-steam-textMuted">${a}</div></div>`;
+            el.innerHTML = `<div class="grid md:grid-cols-[270px_minmax(0,1fr)] gap-4"><div class="lt" style="padding:10px"><div class="text-xs text-steam-textMuted mb-2 tracking-widest">BIBLIOTECA (${own.length})</div><input id="lib-q" class="in" style="margin:0 0 8px" placeholder="Buscar en la biblioteca" value="${esc(state.libQ || '')}" oninput="state.libQ=this.value;renderLibraryView(true)">
+                <div class="flex flex-col gap-1" style="max-height:70vh;overflow:auto">${list.map(row).join('') || '<div class="text-xs text-steam-textMuted p-2">Sin resultados.</div>'}</div></div>
+                <div><div class="relative rounded overflow-hidden mb-4" style="min-height:230px;background:#000">${im(sel, 'hero').replace('<img ', '<img style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75" ')}<div class="relative p-6 flex flex-col justify-end" style="min-height:230px;background:linear-gradient(0deg,#0b141dee,transparent 70%)"><h2 class="text-3xl text-white font-black">${esc(sel.title)}</h2></div></div>
+                <div class="flex flex-wrap items-center gap-3 mb-4"><button class="bgreen big" onclick="playGame(${sel.id})">${sel.dl ? '⬇ Descargar para ' + esc(sel.os) : '▶ JUGAR'}</button><button class="btn2" onclick="navigateTo('game',${sel.id})">Ver en la tienda</button></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">${box('Estado', sel.dl ? 'Descargable' : 'Instalado')}${box('Última sesión', pl ? new Date(pl.t).toLocaleDateString('es') : 'Nunca')}${box('Veces jugado', pl ? pl.n : 0)}${box('Desarrollador', esc(sel.developer))}</div>
+                ${camp ? `<div class="lt mb-4"><b class="text-white">Campaña</b> · ⭐ ${camp.reduce((a, b) => a + b, 0)}/60 estrellas · ${camp.filter(v => v > 0).length}/20 niveles${hasKey() ? '' : ` · 🔑 llave de TÁCTICO 4v4: ${Math.min(KEY_LEVELS, vrLevels())}/${KEY_LEVELS}`}</div>` : ''}
+                <p class="text-sm text-gray-300 leading-relaxed">${esc(sel.description)}</p></div></div>`;
+            if (refocus) { const i = document.getElementById('lib-q'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
         }
 
         window.onload = initAuth;
